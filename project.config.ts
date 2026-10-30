@@ -13,8 +13,8 @@ export const projectConfig = {
     companyName: '온에어 ON AIR',
     serviceName: 'ON AIR',
     locale: 'ko',
-    baseURL: '/',
-    siteUrl: 'http://localhost:3000/',
+    baseURL: '/flight-booking/',
+    siteUrl: 'https://yheun03.github.io/flight-booking/',
     favicon: 'images/projects/onair/favicon.svg',
     themeColor: '#2458dc',
     seo: {

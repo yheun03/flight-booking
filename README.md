@@ -18,7 +18,25 @@ npm run generate
 
 정적 결과물은 `.output/public`입니다. 브라우저 주소로 직접 접속해 사용합니다. HTML 파일을 `file://`로 열면 저장·라우팅이 정상 동작하지 않습니다.
 
-프로젝트는 도메인 루트(`/`)를 기본 경로로 사용합니다. GitHub Pages의 `/flight-booking/` 등에 배포할 때에는 `project.config.ts`의 `baseURL`, `siteUrl`, package.json의 `homepage`를 실제 운영 주소와 일치시키거나 `NUXT_APP_BASE_URL`을 설정합니다. 현재 `siteUrl`은 로컬 개발용 주소입니다. 이번 작업에서는 원격 배포를 실행하지 않았습니다.
+배포 기본 경로는 `/flight-booking/`, 운영 주소는 `https://yheun03.github.io/flight-booking/`입니다. `npm run dev`는 `NUXT_APP_BASE_URL=/`를 적용하므로 로컬에서는 기존처럼 `http://localhost:3000/`을 사용합니다.
+
+## GitHub Pages 배포
+
+```bash
+npm run deploy
+```
+
+정적 파일을 생성한 뒤 현재 Git 저장소의 `origin` 원격에 있는 `gh-pages` 브랜치에 `.output/public` 내용을 게시합니다. `.nojekyll`을 포함해 `_nuxt` 정적 파일이 그대로 제공되도록 합니다. GitHub에 push할 수 있는 Git 인증과 `user.name`, `user.email` 설정이 필요합니다.
+
+최초 배포 후 저장소의 **Settings → Pages → Build and deployment**에서 한 번 설정합니다.
+
+- Source: **Deploy from a branch**
+- Branch: **gh-pages**
+- Folder: **/ (root)**
+
+배포 주소: [온에어 ON AIR](https://yheun03.github.io/flight-booking/). 이후에는 `npm run deploy`로 갱신할 수 있습니다. 배포 설정 변경 작업에서는 실제 GitHub push와 사이트 공개를 실행하지 않았습니다.
+
+다른 저장소나 도메인으로 옮길 때에는 `project.config.ts`의 `baseURL`, `siteUrl` 및 package.json의 `homepage`를 함께 변경합니다.
 
 ## 체험 순서
 

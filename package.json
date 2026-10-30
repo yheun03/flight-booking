@@ -2,7 +2,7 @@
     "name": "onair",
     "version": "0.0.1",
     "private": true,
-    "homepage": "http://localhost:3000/",
+    "homepage": "https://yheun03.github.io/flight-booking/",
     "type": "module",
     "engines": {
         "node": ">=20 <23"
@@ -10,9 +10,9 @@
     "scripts": {
         "build": "nuxt build",
         "clean": "rm -rf .nuxt .output node_modules/.vite",
-        "dev": "nuxt dev",
+        "dev": "NUXT_APP_BASE_URL=/ nuxt dev",
         "generate": "nuxt generate",
-        "deploy": "nuxt generate && gh-pages -d .output/public --dotfiles",
+        "deploy": "npm run generate && gh-pages -d .output/public --branch gh-pages --remote origin --dotfiles --nojekyll",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
         "test:onair": "node tests/run-onair.mjs"
