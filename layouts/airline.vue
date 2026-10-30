@@ -13,8 +13,8 @@
                 </NuxtLink>
                 <nav class="airline__nav" :aria-label="t('onair.journey')">
                     <NuxtLink to="/" :class="{ 'is-current': bookingPaths.includes(routePath) }">예약</NuxtLink>
-                    <NuxtLink to="/my-booking">여행 준비</NuxtLink>
-                    <NuxtLink to="/check-in">스카이패스</NuxtLink>
+                    <NuxtLink to="/travel-guide">여행 준비</NuxtLink>
+                    <NuxtLink to="/my-page">나의 여행</NuxtLink>
                 </nav>
                 <div class="airline__header-tools">
                     <span class="airline__utility">이벤트 · 대한민국 · 한국어</span>
@@ -28,7 +28,15 @@
             </header>
         </ClientOnly>
         <ClientOnly>
-            <div v-if="routePath !== '/'" class="airline__route-strip">
+            <nav v-if="routePath !== '/'" class="airline__lnb" aria-label="여행 서비스 메뉴">
+                <NuxtLink v-for="item in serviceNavigation" :key="item.path" :to="item.path"
+                    :class="{ 'is-current': item.matches.includes(routePath) }">
+                    {{ item.label }}
+                </NuxtLink>
+            </nav>
+        </ClientOnly>
+        <ClientOnly>
+            <div v-if="routeStripPaths.includes(routePath)" class="airline__route-strip">
                 <div class="airline__routebar" role="region" aria-label="현재 항공편 검색 조건">
                     <strong>{{ store.draft.search.from }}</strong>
                     <span class="airline__routebar-swap" aria-hidden="true">⇄</span>
@@ -62,6 +70,12 @@
         <ClientOnly>
             <footer class="airline__footer">
                 <NuxtLink to="/" class="airline__footer-brand">KOREAN AIR</NuxtLink>
+                <nav aria-label="하단 여행 안내">
+                    <NuxtLink to="/travel-guide">여행 절차</NuxtLink>
+                    <NuxtLink to="/baggage">수하물</NuxtLink>
+                    <NuxtLink to="/restricted-items">반입 제한 물품</NuxtLink>
+                    <NuxtLink to="/my-page">마이페이지</NuxtLink>
+                </nav>
                 <p>{{ t('onair.footerNote') }}</p>
                 <span>© {{ new Date().getFullYear() }} KOREAN AIR PRACTICE</span>
             </footer>
@@ -77,6 +91,15 @@ const store = useOnairStore();
 const { t } = useI18nText();
 const routePath = computed(() => route.path.replace(/\/+$/, '') || '/');
 const bookingPaths = ['/', '/flights', '/passengers', '/payment', '/confirmation'];
+const routeStripPaths = [...bookingPaths.slice(1), '/my-booking', '/itinerary', '/seats', '/meals', '/check-in', '/boarding-pass'];
+const serviceNavigation = [
+    { path: '/my-booking', label: '예약 조회', matches: ['/my-booking', '/itinerary'] },
+    { path: '/travel-guide', label: '여행 준비 안내', matches: ['/travel-guide'] },
+    { path: '/baggage', label: '수하물', matches: ['/baggage'] },
+    { path: '/restricted-items', label: '반입 제한 물품', matches: ['/restricted-items'] },
+    { path: '/check-in', label: '체크인 · 탑승권', matches: ['/check-in', '/boarding-pass'] },
+    { path: '/my-page', label: '마이페이지', matches: ['/my-page', '/seats', '/meals'] },
+];
 const step = computed(() => bookingPaths.indexOf(routePath.value) - 1);
 const steps = computed(() => ['flightSelect', 'passengers', 'payment', 'complete'].map((key) => ({ title: t(`onair.${key}`) })));
 async function goToSearch() {

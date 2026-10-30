@@ -114,6 +114,14 @@
             </aside>
         </div>
     </div>
+    <div v-else class="airline-page">
+        <div class="airline__empty">
+            <span aria-hidden="true">▦</span>
+            <h1>좌석을 선택할 예약이 없습니다.</h1>
+            <p>예약을 완료한 뒤 탑승객별 좌석을 선택할 수 있습니다.</p>
+            <AppButton to="/" tone="primary" variant="fill">항공편 검색</AppButton>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">

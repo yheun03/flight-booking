@@ -9,7 +9,14 @@
             <AppButton to="/my-booking">{{ t('onair.myBooking') }}</AppButton>
             <AppButton tone="primary" variant="fill" @click="printPasses">{{ t('onair.print') }} ↗</AppButton>
         </div>
-        <article v-for="pass in passes" :key="`${pass.flight.id}-${pass.passenger.id}`" class="airline-boarding-pass">
+        <div v-if="!passes.length" class="airline__empty no-print">
+            <span aria-hidden="true">▥</span>
+            <h2>아직 발급된 탑승권이 없습니다.</h2>
+            <p>온라인 체크인을 완료하면 탑승권의 탑승 시각, 터미널, 탑승구와 좌석을 확인할 수 있습니다.</p>
+            <AppButton to="/check-in" tone="primary" variant="fill">온라인 체크인</AppButton>
+        </div>
+        <article v-for="pass in passes" :key="`${pass.flight.id}-${pass.passenger.id}`" class="airline-boarding-pass"
+            :aria-label="`${pass.passenger.lastName} ${pass.passenger.firstName} ${pass.flight.number} 탑승권`">
             <header class="airline-boarding-pass__header">
                 <strong>◉ KOREAN AIR</strong>
                 <span>
@@ -61,6 +68,18 @@
                         <dt>{{ t('onair.group') }}</dt>
                         <dd>2</dd>
                     </div>
+                    <div>
+                        <dt>터미널 / TERMINAL</dt>
+                        <dd>{{ terminal(pass.flight) }}</dd>
+                    </div>
+                    <div>
+                        <dt>탑승 마감 / CLOSE</dt>
+                        <dd>{{ boardingClose(pass.flight) }}</dd>
+                    </div>
+                    <div>
+                        <dt>예약 등급 / CLASS</dt>
+                        <dd>Y</dd>
+                    </div>
                 </dl>
                 <div class="airline-boarding-pass__code">
                     <div class="airline-boarding-pass__barcode" aria-hidden="true" />
@@ -72,6 +91,14 @@
                 </footer>
             </div>
         </article>
+    </div>
+    <div v-else class="airline-page">
+        <div class="airline__empty">
+            <span aria-hidden="true">▥</span>
+            <h1>발급된 탑승권이 없습니다.</h1>
+            <p>예약 조회 후 온라인 체크인을 완료하면 탑승권을 확인할 수 있습니다.</p>
+            <AppButton to="/check-in" tone="primary" variant="fill">온라인 체크인</AppButton>
+        </div>
     </div>
 </template>
 
@@ -95,6 +122,12 @@ const passes = computed(
 );
 function boardingTime(flight: Flight) {
     return new Date(flight.departureUtc + airport(flight.from).offset * 3600000 - 40 * 60000).toISOString().slice(11, 16);
+}
+function boardingClose(flight: Flight) {
+    return new Date(flight.departureUtc + airport(flight.from).offset * 3600000 - 10 * 60000).toISOString().slice(11, 16);
+}
+function terminal(flight: Flight) {
+    return ['GMP', 'CJU'].includes(flight.from) ? 'DOM' : flight.from === 'ICN' ? 'T2' : 'T1';
 }
 function printPasses() {
     window.print();

@@ -108,6 +108,24 @@
                             <small>미운영</small>
                         </AppButton>
                     </div>
+                    <dl v-if="selected?.id === entry.flight.id" class="airline-fare-benefits" aria-label="선택 운임 조건">
+                        <div>
+                            <dt>무료 위탁 수하물</dt>
+                            <dd>1개 · 20kg 이내</dd>
+                        </div>
+                        <div>
+                            <dt>좌석 선택</dt>
+                            <dd>{{ selected.fare === 'light' ? '일부 좌석 유료' : '일반 좌석 무료' }}</dd>
+                        </div>
+                        <div>
+                            <dt>예약 변경</dt>
+                            <dd>{{ selected.fare === 'flex' ? '수수료 면제' : '운임별 수수료 적용' }}</dd>
+                        </div>
+                        <div>
+                            <dt>환불</dt>
+                            <dd>{{ selected.fare === 'flex' ? '출발 전 가능' : '운임별 위약금 적용' }}</dd>
+                        </div>
+                    </dl>
                     <div v-if="detailFlightId === entry.flight.id" class="korean-flight-detail"
                         @click.self="closeDetail(entry.flight.id)" @keydown.esc="closeDetail(entry.flight.id)">
                         <div class="korean-flight-detail__dialog" role="dialog" aria-modal="true"

@@ -10,24 +10,27 @@
                 <OnairServiceSelector v-model:flight-id="flightId" />
                 <p class="airline__notice">{{ t('onair.checkinRule') }}</p>
                 <div class="airline__toolbar">
-                    <strong>{{ flight.number }} · {{ flight.date }} {{ flight.departure }} ({{ airport(flight.from).zone }})</strong>
+                    <strong>{{ flight.number }} · {{ flight.date }} {{ flight.departure }} ({{ airport(flight.from).zone
+                        }})</strong>
                     <span class="airline__status">{{ t(`onair.${open ? 'checkinAvailable' : 'notCheckedIn'}`) }}</span>
                 </div>
-                <section v-for="passenger in booking.passengers" :key="passenger.id" class="airline__panel airline-checkin-passenger">
-                    <AppChoice
-                        :model-value="chosen.includes(passenger.id)"
+                <section v-for="passenger in booking.passengers" :key="passenger.id"
+                    class="airline__panel airline-checkin-passenger">
+                    <AppChoice :model-value="chosen.includes(passenger.id)"
                         :label="`${passenger.lastName} ${passenger.firstName}`"
                         :disabled="services[passenger.id].checkedIn || !open"
-                        @update:model-value="toggle(passenger.id, Boolean($event))"
-                    />
+                        @update:model-value="toggle(passenger.id, Boolean($event))" />
                     <p>
                         {{ passenger.birth }} · {{ t('onair.seat') }}
                         <strong>{{ services[passenger.id].seat || t('onair.notSelected') }}</strong>
                         ·
-                        {{ mealOffered(flight) ? t(`onair.${services[passenger.id].meal || 'regular'}`) : t('onair.notOffered') }}
+                        {{ mealOffered(flight) ? t(`onair.${services[passenger.id].meal || 'regular'}`) :
+                            t('onair.notOffered') }}
                     </p>
-                    <span v-if="services[passenger.id].checkedIn" class="airline__status">✓ {{ t('onair.checkedIn') }}</span>
-                    <NuxtLink v-else-if="!services[passenger.id].seat" to="/seats" class="airline__text-link">{{ t('onair.seats') }} →</NuxtLink>
+                    <span v-if="services[passenger.id].checkedIn" class="airline__status">✓ {{ t('onair.checkedIn')
+                        }}</span>
+                    <NuxtLink v-else-if="!services[passenger.id].seat" to="/seats" class="airline__text-link">{{
+                        t('onair.seats') }} →</NuxtLink>
                 </section>
                 <section class="airline__panel airline__stack">
                     <h2>{{ t('onair.notice') }}</h2>
@@ -35,18 +38,25 @@
                     <AppChoice v-model="consent" :label="t('onair.checkinConsent')" />
                 </section>
                 <p v-if="!open" class="airline__notice">{{ t('onair.checkinClosed') }}</p>
-                <p v-if="error" id="checkin-error" class="airline__error" role="alert" tabindex="-1">{{ t(`onair.${error}`) }}</p>
+                <p v-if="error" id="checkin-error" class="airline__error" role="alert" tabindex="-1">{{
+                    t(`onair.${error}`) }}</p>
                 <div class="airline__actions">
                     <AppButton to="/my-booking">{{ t('onair.myBooking') }}</AppButton>
-                    <AppButton v-if="allChecked" to="/boarding-pass" tone="primary" variant="fill" size="lg"
-                        >{{ t('onair.boardingPass') }} →</AppButton
-                    >
-                    <AppButton v-else :disabled="!open" tone="primary" variant="fill" size="lg" @click="checkin"
-                        >{{ t('onair.checkinNow') }} →</AppButton
-                    >
+                    <AppButton v-if="allChecked" to="/boarding-pass" tone="primary" variant="fill" size="lg">{{
+                        t('onair.boardingPass') }} →</AppButton>
+                    <AppButton v-else :disabled="!open" tone="primary" variant="fill" size="lg" @click="checkin">{{
+                        t('onair.checkinNow') }} →</AppButton>
                 </div>
             </div>
             <OnairSummary confirmed />
+        </div>
+    </div>
+    <div v-else class="airline-page">
+        <div class="airline__empty">
+            <span aria-hidden="true">✓</span>
+            <h1>체크인할 예약이 없습니다.</h1>
+            <p>예약을 완료한 뒤 체크인 가능 시간에 다시 이용해 주세요.</p>
+            <AppButton to="/" tone="primary" variant="fill">항공편 검색</AppButton>
         </div>
     </div>
 </template>

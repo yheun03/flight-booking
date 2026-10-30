@@ -17,16 +17,9 @@
                 <template v-else>
                     <p class="airline__notice">{{ t('onair.mealDefault') }}</p>
                     <div class="airline-meals">
-                        <button
-                            v-for="(meal, index) in meals"
-                            :key="meal"
-                            class="airline-meal"
-                            :class="{ 'is-selected': service.meal === meal }"
-                            type="button"
-                            :disabled="service.checkedIn"
-                            :aria-pressed="service.meal === meal"
-                            @click="choose(meal)"
-                        >
+                        <button v-for="(meal, index) in meals" :key="meal" class="airline-meal"
+                            :class="{ 'is-selected': service.meal === meal }" type="button"
+                            :disabled="service.checkedIn" :aria-pressed="service.meal === meal" @click="choose(meal)">
                             <div class="airline-meal__art" :class="`airline-meal__art--${meal}`" aria-hidden="true">
                                 <span class="airline-meal__plate">
                                     <i />
@@ -38,7 +31,8 @@
                             <div class="airline-meal__info">
                                 <h2>
                                     {{ t(`onair.${meal}`) }}
-                                    <span>{{ service.meal === meal ? `✓ ${t('onair.selected')}` : t('onair.free') }}</span>
+                                    <span>{{ service.meal === meal ? `✓ ${t('onair.selected')}` : t('onair.free')
+                                        }}</span>
                                 </h2>
                                 <p>{{ t(`onair.${meal}Desc`) }}</p>
                             </div>
@@ -47,10 +41,19 @@
                 </template>
                 <div class="airline__actions">
                     <AppButton to="/seats">{{ t('onair.seats') }}</AppButton>
-                    <AppButton to="/check-in" tone="primary" variant="fill" size="lg">{{ t('onair.checkin') }} →</AppButton>
+                    <AppButton to="/check-in" tone="primary" variant="fill" size="lg">{{ t('onair.checkin') }} →
+                    </AppButton>
                 </div>
             </div>
             <OnairSummary confirmed />
+        </div>
+    </div>
+    <div v-else class="airline-page">
+        <div class="airline__empty">
+            <span aria-hidden="true">◌</span>
+            <h1>기내 서비스를 선택할 예약이 없습니다.</h1>
+            <p>예약을 완료한 뒤 항공편에서 제공되는 기내 서비스를 선택할 수 있습니다.</p>
+            <AppButton to="/" tone="primary" variant="fill">항공편 검색</AppButton>
         </div>
     </div>
 </template>

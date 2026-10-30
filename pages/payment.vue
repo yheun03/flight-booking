@@ -57,6 +57,21 @@
                             t('onair.insufficient') }}</p>
                     </template>
                 </section>
+                <section class="airline__panel airline__stack airline-purchase-info" aria-labelledby="purchase-info-title">
+                    <div class="airline__toolbar">
+                        <h2 id="purchase-info-title">결제 전 최종 확인</h2>
+                        <span class="airline__muted">통화 KRW</span>
+                    </div>
+                    <dl>
+                        <div><dt>항공 운임</dt><dd>{{ money(store.totals.fare) }}원</dd></div>
+                        <div><dt>세금·수수료</dt><dd>{{ money(store.totals.tax) }}원</dd></div>
+                        <div><dt>총 결제 금액</dt><dd><strong>{{ money(store.totals.fare + store.totals.tax) }}원</strong></dd></div>
+                        <div><dt>무료 위탁 수하물</dt><dd>탑승객 1인당 1개 · 20kg 이내</dd></div>
+                        <div><dt>변경·환불</dt><dd>선택한 운임별 수수료와 위약금 적용</dd></div>
+                        <div><dt>전자항공권 발송</dt><dd>{{ store.draft.contact.email }}</dd></div>
+                    </dl>
+                    <p class="airline__notice">결제 후 탑승객 이름과 결제 수단은 변경할 수 없습니다. 여정·승객·총액과 운임 조건을 확인한 뒤 결제해 주세요.</p>
+                </section>
                 <section class="airline__panel airline__stack">
                     <h2>{{ t('onair.review') }}</h2>
                     <p v-for="passenger in store.draft.passengers" :key="passenger.id">

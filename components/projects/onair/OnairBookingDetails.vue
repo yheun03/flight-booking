@@ -37,7 +37,8 @@
                         <div>
                             <span>
                                 {{ t('onair.seat') }}
-                                <b>{{ store.booking.services[flight.id][passenger.id].seat || t('onair.notSelected') }}</b>
+                                <b>{{ store.booking.services[flight.id][passenger.id].seat || t('onair.notSelected')
+                                    }}</b>
                             </span>
                             <span>
                                 {{ t('onair.meals') }}
@@ -49,12 +50,55 @@
                                     }}
                                 </b>
                             </span>
-                            <span :class="{ airline__status: store.booking.services[flight.id][passenger.id].checkedIn }">
-                                {{ t(`onair.${store.booking.services[flight.id][passenger.id].checkedIn ? 'checkedIn' : 'notCheckedIn'}`) }}
+                            <span
+                                :class="{ airline__status: store.booking.services[flight.id][passenger.id].checkedIn }">
+                                {{ t(`onair.${store.booking.services[flight.id][passenger.id].checkedIn ? 'checkedIn' :
+                                'notCheckedIn'}`) }}
                             </span>
                         </div>
                     </li>
                 </ul>
+            </section>
+            <section class="airline__panel airline__stack airline-ticket-data" aria-labelledby="ticket-data-title">
+                <div class="airline__toolbar">
+                    <h2 id="ticket-data-title">전자항공권 및 결제 정보</h2>
+                    <span class="airline__status">발권 완료</span>
+                </div>
+                <dl>
+                    <div v-for="(passenger, index) in store.booking.passengers" :key="passenger.id">
+                        <dt>탑승객 · 전자항공권 번호</dt>
+                        <dd>{{ passenger.lastName }} {{ passenger.firstName }} <strong>{{ ticketNumber(index)
+                                }}</strong></dd>
+                    </div>
+                    <div>
+                        <dt>발권일</dt>
+                        <dd>{{ store.booking.createdAt.slice(0, 10) }}</dd>
+                    </div>
+                    <div>
+                        <dt>결제 수단</dt>
+                        <dd>{{ store.booking.method === 'card' ? '카드·간편결제' : '마일리지' }}</dd>
+                    </div>
+                    <div>
+                        <dt>결제 금액</dt>
+                        <dd><strong>{{ money(store.booking.fare + store.booking.tax) }} KRW</strong></dd>
+                    </div>
+                    <div>
+                        <dt>결제 승인 참조</dt>
+                        <dd>{{ store.booking.transactionId.slice(0, 13).toUpperCase() }}</dd>
+                    </div>
+                    <div>
+                        <dt>무료 위탁 수하물</dt>
+                        <dd>탑승객 1인당 1개 · 20kg 이내</dd>
+                    </div>
+                    <div>
+                        <dt>예약 연락처</dt>
+                        <dd>{{ store.booking.contact.email }} · {{ store.booking.contact.phone }}</dd>
+                    </div>
+                    <div>
+                        <dt>운임 조건</dt>
+                        <dd>변경·환불 시 선택 운임의 규정과 수수료가 적용됩니다.</dd>
+                    </div>
+                </dl>
             </section>
             <section v-if="!print" class="airline__panel airline__stack no-print">
                 <h2>{{ t('onair.services') }}</h2>
@@ -78,7 +122,7 @@
 
 <script setup lang="ts">
 import { useOnairStore } from '~/stores/onair';
-import { airport, mealOffered } from '~/utils/onair';
+import { airport, mealOffered, money } from '~/utils/onair';
 
 defineProps<{ print?: boolean }>();
 const store = useOnairStore();
@@ -88,4 +132,8 @@ const services = [
     { path: '/meals', key: 'meals' },
     { path: '/check-in', key: 'checkin' },
 ];
+function ticketNumber(index: number) {
+    const seed = [...store.booking!.id].reduce((total, char) => total + char.charCodeAt(0), 0) * 100 + index;
+    return `180-${String(seed).padStart(10, '0')}`;
+}
 </script>

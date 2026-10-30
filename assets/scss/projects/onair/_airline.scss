@@ -135,6 +135,41 @@ body:has(.airline) {
         }
     }
 
+    &__lnb {
+        min-height: 48px;
+        padding: 0 max(5%, calc((100% - 1180px) / 2));
+        display: flex;
+        align-items: stretch;
+        gap: 30px;
+        border-bottom: 1px solid var(--onair-line);
+        background: #fff;
+
+        a {
+            position: relative;
+            display: flex;
+            align-items: center;
+            color: var(--onair-muted);
+            font-size: 12px;
+            white-space: nowrap;
+
+            &.is-current,
+            &.router-link-exact-active {
+                color: var(--onair-blue);
+                font-weight: 600;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    height: 2px;
+                    background: var(--onair-blue);
+                }
+            }
+        }
+    }
+
     &__header-tools {
         display: grid;
         grid-template-columns: auto auto;
@@ -194,6 +229,18 @@ body:has(.airline) {
         border-top: 1px solid var(--onair-line);
         color: var(--onair-muted);
         font-size: 11px;
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+
+            a:hover {
+                color: var(--onair-blue);
+                text-decoration: underline;
+                text-underline-offset: 4px;
+            }
+        }
     }
 
     &__footer-brand {
@@ -1725,6 +1772,469 @@ body:has(.airline) {
     }
 }
 
+.airline-ticket-data {
+    dl {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-top: 1px solid var(--onair-line);
+    }
+
+    dl>div {
+        min-width: 0;
+        padding: 16px 12px 16px 0;
+        border-bottom: 1px solid var(--onair-line);
+    }
+
+    dt {
+        margin-bottom: 5px;
+        color: var(--onair-muted);
+        font-size: 11px;
+    }
+
+    dd {
+        font-size: 13px;
+        overflow-wrap: anywhere;
+
+        strong {
+            display: block;
+            color: var(--onair-blue);
+        }
+    }
+}
+
+.airline-confirmation-next {
+    margin-bottom: 34px;
+    padding: 24px 28px;
+    border-radius: 10px;
+    background: var(--onair-soft);
+
+    >div {
+        margin-bottom: 18px;
+
+        h2 {
+            margin-top: 4px;
+        }
+    }
+
+    ol {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        background: #cadde6;
+    }
+
+    li {
+        padding: 18px;
+        display: grid;
+        gap: 5px;
+        background: #fff;
+
+        >span {
+            display: grid;
+            place-items: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--onair-blue);
+            color: #fff;
+            font-size: 11px;
+        }
+
+        a {
+            color: var(--onair-blue);
+            font-size: 12px;
+        }
+    }
+}
+
+.airline-fare-benefits,
+.airline-purchase-info dl {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 10px;
+    background: var(--onair-line);
+
+    >div {
+        padding: 13px;
+        background: #fff;
+    }
+
+    dt {
+        color: var(--onair-muted);
+        font-size: 10px;
+    }
+
+    dd {
+        margin-top: 4px;
+        font-size: 12px;
+    }
+}
+
+.airline-purchase-info dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 0;
+}
+
+.airline-guide {
+
+    &__columns,
+    .airline-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+        margin-top: 28px;
+    }
+
+    &__warning {
+        margin-top: 28px;
+
+        h2 {
+            margin-bottom: 7px;
+        }
+    }
+}
+
+.airline-journey {
+    border-top: 2px solid var(--onair-blue);
+
+    li {
+        display: grid;
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 26px;
+        padding: 25px 8px;
+        border-bottom: 1px solid var(--onair-line);
+    }
+
+    li>span {
+        color: var(--onair-sky);
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    li>div {
+        display: grid;
+        grid-template-columns: 140px minmax(160px, 0.55fr) minmax(240px, 1fr) auto;
+        align-items: center;
+        gap: 20px;
+
+        >p:first-child {
+            color: var(--onair-blue);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        >p:not(:first-child) {
+            color: var(--onair-muted);
+            font-size: 13px;
+        }
+    }
+}
+
+.airline-check-list {
+    display: grid;
+    gap: 14px;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 13px;
+
+        span {
+            color: #1d6951;
+            font-weight: 700;
+        }
+    }
+}
+
+.airline-baggage-summary {
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    align-items: center;
+    gap: 32px;
+    border-radius: 10px;
+    background: var(--onair-ink);
+    color: #fff;
+
+    p,
+    span,
+    dt {
+        color: #c9d6e8;
+        font-size: 11px;
+    }
+
+    h2 {
+        margin: 4px 0;
+        font-size: 28px;
+    }
+
+    dl {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    dl>div {
+        padding: 16px;
+        border: 1px solid #ffffff38;
+        border-radius: 7px;
+    }
+
+    dd {
+        margin-top: 4px;
+        font-weight: 600;
+    }
+}
+
+.airline-info-grid {
+    margin-bottom: 22px;
+
+    section {
+        position: relative;
+    }
+
+    &__number {
+        position: absolute;
+        top: 22px;
+        right: 24px;
+        color: #b7ddeb;
+        font-size: 30px;
+        font-weight: 600;
+    }
+
+    strong {
+        color: var(--onair-blue);
+        font-size: 18px;
+    }
+
+    p,
+    li {
+        color: var(--onair-muted);
+        font-size: 13px;
+    }
+
+    ul {
+        display: grid;
+        gap: 6px;
+        padding-left: 18px;
+        list-style: disc;
+    }
+}
+
+.airline-restriction-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 22px;
+    font-size: 12px;
+
+    span {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    i {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--onair-sky);
+
+        &.is-checked {
+            background: #cf994a;
+        }
+
+        &.is-prohibited {
+            background: #c44848;
+        }
+    }
+}
+
+.airline-restriction-list {
+    display: grid;
+    gap: 12px;
+
+    section {
+        display: grid;
+        grid-template-columns: 104px minmax(0, 1fr);
+        gap: 22px;
+
+        >span {
+            align-self: start;
+            padding: 7px 9px;
+            border-radius: 4px;
+            background: #e7f6fc;
+            color: var(--onair-blue);
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+
+            &.is-checked {
+                background: #fff3df;
+                color: #805a23;
+            }
+
+            &.is-prohibited {
+                background: #fff0ef;
+                color: #a12c25;
+            }
+
+            &.is-limited {
+                background: #f0f0f5;
+                color: #4d5261;
+            }
+        }
+
+        h2 {
+            margin-bottom: 5px;
+        }
+
+        p,
+        li {
+            color: var(--onair-muted);
+            font-size: 13px;
+        }
+
+        ul {
+            margin-top: 10px;
+            padding-left: 18px;
+            list-style: disc;
+        }
+    }
+}
+
+.airline-mypage {
+    &__hero {
+        padding: 32px;
+        display: flex;
+        justify-content: space-between;
+        gap: 28px;
+        border-radius: 12px;
+        background: linear-gradient(120deg, var(--onair-ink), #173d7c);
+        color: #fff;
+
+        h2 {
+            margin: 4px 0;
+            font-size: 28px;
+        }
+
+        p,
+        span,
+        a {
+            color: #c9d6e8;
+            font-size: 12px;
+        }
+
+        >div:last-child {
+            display: grid;
+            align-content: center;
+            justify-items: end;
+
+            strong {
+                font-size: 25px;
+                letter-spacing: 1px;
+            }
+        }
+    }
+
+    >.airline__panel {
+        margin-top: 24px;
+    }
+
+    &__services {
+        margin-top: 38px;
+
+        >div:last-child {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        a {
+            min-height: 150px;
+            padding: 22px;
+            display: grid;
+            align-content: start;
+            gap: 8px;
+            border: 1px solid var(--onair-line);
+            border-radius: 9px;
+
+            >span {
+                color: var(--onair-sky);
+                font-size: 26px;
+            }
+
+            small {
+                color: var(--onair-muted);
+            }
+        }
+    }
+
+    &__account {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+
+        div {
+            display: grid;
+        }
+
+        span,
+        small {
+            color: var(--onair-muted);
+            font-size: 11px;
+        }
+    }
+}
+
+.airline-readiness {
+    display: grid;
+    gap: 1px;
+    background: var(--onair-line);
+
+    li {
+        padding: 17px 0;
+        display: grid;
+        grid-template-columns: 32px 1fr auto;
+        align-items: center;
+        gap: 13px;
+        background: #fff;
+
+        >span {
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--onair-line);
+            border-radius: 50%;
+            font-size: 11px;
+        }
+
+        &.is-complete>span {
+            border-color: #80b399;
+            background: #e9f3ed;
+            color: #1d6951;
+        }
+
+        div {
+            display: grid;
+        }
+
+        small {
+            color: var(--onair-muted);
+        }
+
+        a {
+            color: var(--onair-blue);
+            font-size: 12px;
+            font-weight: 600;
+        }
+    }
+}
+
 .airline-booking-route {
     display: flex;
     justify-content: space-between;
@@ -2675,6 +3185,7 @@ body:has(.airline) {
 body:has(.airline-page--seats) {
 
     .airline__header,
+    .airline__lnb,
     .airline__footer,
     .airline__steps {
         display: none;
@@ -2850,6 +3361,13 @@ body:has(.airline) .app-modal {
             }
         }
 
+        &__lnb {
+            min-height: 44px;
+            padding: 0 5%;
+            gap: 22px;
+            overflow-x: auto;
+        }
+
         &__main {
             padding: 0 5%;
         }
@@ -2863,6 +3381,11 @@ body:has(.airline) .app-modal {
                 width: 100%;
                 order: 2;
                 font-size: 10px;
+            }
+
+            nav {
+                order: 1;
+                width: 100%;
             }
         }
 
@@ -3172,6 +3695,67 @@ body:has(.airline) .app-modal {
         }
     }
 
+    .airline-confirmation-next ol,
+    .airline-guide__columns,
+    .airline-guide .airline-info-grid,
+    .airline-mypage__services>div:last-child {
+        grid-template-columns: 1fr;
+    }
+
+    .airline-fare-benefits,
+    .airline-purchase-info dl {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .airline-guide .airline__actions {
+        position: static;
+        padding: 0;
+        border-top: 0;
+    }
+
+    .airline-journey {
+        li {
+            grid-template-columns: 44px minmax(0, 1fr);
+            gap: 12px;
+        }
+
+        li>div {
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+    }
+
+    .airline-baggage-summary {
+        grid-template-columns: 1fr;
+        padding: 24px;
+    }
+
+    .airline-restriction-list section {
+        grid-template-columns: 1fr;
+        gap: 14px;
+
+        >span {
+            justify-self: start;
+        }
+    }
+
+    .airline-mypage {
+
+        &__hero,
+        &__account {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        &__hero>div:last-child {
+            justify-items: start;
+        }
+    }
+
+    .airline-ticket-data dl {
+        grid-template-columns: 1fr;
+    }
+
     .airline-summary {
         position: static;
         padding: 23px;
@@ -3312,6 +3896,7 @@ body:has(.airline) .app-modal {
     }
 
     .airline__header,
+    .airline__lnb,
     .airline__footer,
     .airline__steps,
     .airline__skip,
