@@ -1,0 +1,305 @@
+@use '../../abstract' as *;
+@use 'sass:map';
+
+/* =========================================
+   Config
+========================================= */
+
+$select-sizes: (
+    xs: (
+        height: 36px,
+        padding-x: 12px,
+        icon: 16px,
+        gap: 8px,
+    ),
+    sm: (
+        height: 44px,
+        padding-x: 16px,
+        icon: 18px,
+        gap: 8px,
+    ),
+    md: (
+        height: 48px,
+        padding-x: 16px,
+        icon: 20px,
+        gap: 10px,
+    ),
+    lg: (
+        height: 56px,
+        padding-x: 16px,
+        icon: 22px,
+        gap: 10px,
+    ),
+);
+
+/* =========================================
+   Component: AppSelect
+========================================= */
+
+.app-select {
+    /* -------------------------
+       Element
+    ------------------------- */
+
+    &__control {
+        position: relative;
+        overflow: visible;
+    }
+
+    &__trigger {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        background-color: transparent;
+        border: 0;
+        outline: 0;
+        color: inherit;
+        cursor: pointer;
+        text-align: left;
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    &__value {
+        @include font(b3, rg);
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        &--placeholder {
+            color: var(--color-select);
+        }
+    }
+
+    &__value-text,
+    &__option-text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    &__value-label,
+    &__option-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__value-desc,
+    &__option-desc {
+        @include font(c2, rg);
+        color: var(--color-select);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    // 이미지 포함 셀렉트 (Figma 09. Select Box - 08_이미지 포함 셀렉트)
+    &__thumb {
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+        background: var(--bg-select-light);
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        pointer-events: none;
+        transition: transform 0.2s ease;
+
+        &--right {
+            flex-shrink: 0;
+        }
+
+        svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    &__menu {
+        position: fixed;
+        z-index: 10000;
+        margin: 0;
+        padding: 6px 0;
+        list-style: none;
+        background-color: var(--bg-select);
+        border: 1px solid var(--border-select);
+        border-radius: 8px;
+        box-shadow: 0 8px 24px var(--shadow-select);
+        max-height: 240px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    &__option-item {
+        margin: 0;
+        padding: 0;
+    }
+
+    &__option {
+        @include font(b3, rg);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 14px;
+        border: 0;
+        background: transparent;
+        color: var(--color-select-02-black);
+        cursor: pointer;
+        text-align: left;
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
+
+        &:hover {
+            background-color: var(--bg-select-light);
+        }
+
+        &.is-selected {
+            background-color: var(--bg-select-light);
+            color: var(--color-select-02-black);
+        }
+
+        &.is-disabled {
+            color: var(--color-select-05-gray-disabled);
+            cursor: not-allowed;
+            background-color: transparent;
+
+            .app-select__thumb {
+                opacity: 0.5;
+            }
+        }
+
+        &:disabled {
+            pointer-events: none;
+        }
+    }
+
+    /* -------------------------
+       State
+    ------------------------- */
+
+    &--open {
+        .app-select__icon--right {
+            transform: rotate(180deg);
+        }
+    }
+
+    /* -------------------------
+       Modifier: Size
+    ------------------------- */
+
+    @each $size, $data in $select-sizes {
+        &--#{$size} {
+            .app-select__trigger {
+                height: map.get($data, height);
+                padding-inline: map.get($data, padding-x);
+                gap: map.get($data, gap);
+                align-content: center;
+            }
+
+            .app-select__icon {
+                width: map.get($data, icon);
+                height: map.get($data, icon);
+            }
+        }
+
+        &__menu--#{$size} .app-select__option {
+            min-height: map.get($data, height);
+            padding-inline: map.get($data, padding-x);
+            align-content: center;
+        }
+    }
+
+    /* -------------------------
+       Modifier: Shape
+    ------------------------- */
+
+    &--shape-square {
+        .app-select__control {
+            border-radius: 0;
+        }
+    }
+
+    &--shape-round {
+        .app-select__control {
+            border-radius: 6px;
+        }
+    }
+
+    &--shape-pill {
+        .app-select__control {
+            border-radius: 999px;
+        }
+
+        .app-select__trigger {
+            padding-inline: 20px;
+        }
+    }
+
+    &--shape-underline {
+        .app-select__control {
+            border-width: 0 0 1px;
+        }
+
+        .app-select__trigger {
+            padding-inline: 0;
+        }
+    }
+
+    &.is-readonly {
+        .app-select__trigger {
+            cursor: default;
+        }
+
+        .app-select__control {
+            background: var(--bg-select-light);
+        }
+
+        .app-select__value {
+            color: var(--color-select-gray-700);
+        }
+
+        .app-select__icon {
+            opacity: 0.5;
+        }
+    }
+
+    &.is-disabled {
+        .app-select__trigger {
+            cursor: not-allowed;
+        }
+
+        .app-select__control {
+            background: var(--bg-select-regular);
+        }
+
+        .app-select__value {
+            color: var(--color-select-05-gray-disabled);
+        }
+
+        .app-select__icon {
+            opacity: 0.4;
+        }
+    }
+}

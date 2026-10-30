@@ -1,0 +1,740 @@
+@use 'sass:map';
+@use '@project-theme' as project;
+@use '../abstract/tokens' as ds;
+@use '../abstract/theme' as *;
+
+// ============================================
+// 런타임 기본 토큰
+// 설정 페이지는 아래 --theme-* 변수만 변경합니다.
+// 컴포넌트에서는 이 변수를 직접 사용하지 않습니다.
+// ============================================
+:root {
+    // 브랜드
+    --theme-primary: #{$primary};
+    --theme-secondary: #{$secondary};
+    --theme-tertiary: #{$tertiary};
+
+    // Figma 01~02. 브랜드 컬러 / 그라디언트
+    // 값은 projects/{key}/_theme.scss 의 $primary / $secondary / $tertiary 를 따릅니다.
+    // (_tokens.scss 의 $ds-brand 는 Figma 원본 기본값 기록용)
+    --theme-brand-main: var(--theme-primary);
+    --theme-brand-sub-1: var(--theme-secondary);
+    --theme-brand-sub-2: var(--theme-tertiary);
+    --theme-gradient-main: linear-gradient(90deg, var(--theme-brand-main) 0%, color-mix(in srgb, var(--theme-brand-main) 0%, transparent) 100%);
+    --theme-gradient-main-sub-1: linear-gradient(90deg, var(--theme-brand-main) 0%, var(--theme-brand-sub-1) 100%);
+    --theme-gradient-main-sub-2: linear-gradient(90deg, var(--theme-brand-main) 0%, var(--theme-brand-sub-2) 100%);
+    --theme-gradient-sub-1-sub-2: linear-gradient(90deg, var(--theme-brand-sub-1) 0%, var(--theme-brand-sub-2) 100%);
+    --theme-dark-home-end: #11161f;
+
+    --theme-primary-50: color-mix(in srgb, white 92%, var(--theme-primary));
+    --theme-primary-100: color-mix(in srgb, white 84%, var(--theme-primary));
+    --theme-primary-200: color-mix(in srgb, white 68%, var(--theme-primary));
+    --theme-primary-300: color-mix(in srgb, white 48%, var(--theme-primary));
+    --theme-primary-400: color-mix(in srgb, white 22%, var(--theme-primary));
+    --theme-primary-500: var(--theme-primary);
+    --theme-primary-600: color-mix(in srgb, black 15%, var(--theme-primary));
+    --theme-primary-700: color-mix(in srgb, black 30%, var(--theme-primary));
+    --theme-primary-800: color-mix(in srgb, black 45%, var(--theme-primary));
+    --theme-primary-900: color-mix(in srgb, black 63%, var(--theme-primary));
+    --theme-gradient-primary: linear-gradient(to bottom, var(--theme-primary-800), var(--theme-primary-900));
+
+    // 상태
+    // Figma 09. 상태 컬러
+    --theme-status-success: #{map.get(ds.$ds-state-color, 'success')};
+    --theme-status-warning: #{map.get(ds.$ds-state-color, 'warning')};
+    --theme-status-error: #{map.get(ds.$ds-state-color, 'error')};
+    --theme-status-info: var(--theme-primary);
+
+    // 중립 팔레트
+    --theme-gray-0: #ffffff;
+    --theme-gray-50: #f7f8fa;
+    --theme-gray-100: #eff1f4;
+    --theme-gray-200: #e2e5ea;
+    --theme-gray-300: #cdd4da;
+    --theme-gray-400: #a7b0bb;
+    --theme-gray-500: #7e8894;
+    --theme-gray-600: #5e6670;
+    --theme-gray-700: #3f454f;
+    --theme-gray-800: #2a2f38;
+    --theme-gray-900: #1c2026;
+
+    // 기존 공통 토큰
+    --theme-color-01-white: #{map.get(ds.$ds-font-color, '01-white')};
+    --theme-color-02-black: #{map.get(ds.$ds-font-color, '02-black')};
+    --theme-color-03-gray: #{map.get(ds.$ds-font-color, '03-gray')};
+    --theme-color-04-gray: #{map.get(ds.$ds-font-color, '04-gray')};
+    --theme-color-05-gray-disabled: #{map.get(ds.$ds-font-color, '05-gray-disabled')};
+    --theme-line-light: #{map.get(ds.$ds-line-color, 'light')};
+    --theme-line-regular: #{map.get(ds.$ds-line-color, 'regular')};
+    --theme-line-black: #{map.get(ds.$ds-line-color, 'black')};
+    --theme-line-white: #{map.get(ds.$ds-line-color, 'white')};
+    --theme-line-disabled: #{map.get(ds.$ds-line-color, 'disabled')};
+    --theme-bg-light: #{map.get(ds.$ds-bg-color, 'light')};
+    --theme-bg-regular: #{map.get(ds.$ds-bg-color, 'regular')};
+    --theme-bg-black: #{map.get(ds.$ds-bg-color, 'black')};
+    --theme-bg-white: #{map.get(ds.$ds-bg-color, 'white')};
+    --theme-bg-black-opacity-85: rgb(0 0 0 / 85%);
+    --theme-bg-black-opacity-60: rgb(0 0 0 / 60%);
+    --theme-bg-black-opacity-30: rgb(0 0 0 / 30%);
+    --theme-bg-black-opacity-20: rgb(0 0 0 / 20%);
+    --theme-bg-black-opacity-03: rgb(0 0 0 / 3%);
+    --theme-bg-white-opacity-60: rgb(255 255 255 / 60%);
+    --theme-bg-white-opacity-20: rgb(255 255 255 / 20%);
+    --theme-bg-btn-black: #111111;
+    --theme-bg-btn-white: #ffffff;
+    --theme-bg-btn-light: #f7f7fb;
+    --theme-bg-btn-regular: #e5e5ec;
+    --theme-bg-btn-disabled: #f1f1f5;
+
+    // 레이아웃 기본값
+    --theme-header-background: #{project-value(project.$header-background, var(--theme-primary-50))};
+    --theme-header-hover-color: #{project-value(project.$header-hover-color, color-mix(in srgb, var(--theme-secondary) 12%, transparent))};
+    --theme-header-active-color: #{project-value(project.$header-active-color, color-mix(in srgb, var(--theme-tertiary) 16%, transparent))};
+    --theme-header-accent-color: #{project-value(project.$header-accent-color, var(--theme-tertiary))};
+    --theme-lnb-background: #{project-value(project.$lnb-background, var(--theme-gradient-primary))};
+    --theme-lnb-hover-color: #{project-value(project.$lnb-hover-color, rgb(255 255 255 / 8%))};
+    --theme-lnb-active-color: #{project-value(project.$lnb-active-color, rgb(255 255 255 / 16%))};
+    --theme-page-navigator-background: #{project-value(project.$page-navigator-background, var(--theme-primary-50))};
+    --theme-page-navigator-hover-color: #{project-value(
+            project.$page-navigator-hover-color,
+            color-mix(in srgb, var(--theme-gray-900) 5%, transparent)
+        )};
+    --theme-page-navigator-active-color: #{project-value(project.$page-navigator-active-color, var(--theme-gray-0))};
+    --theme-page-navigator-accent-color: #{project-value(project.$page-navigator-accent-color, var(--theme-gray-900))};
+    --theme-page-navigator-control-active-color: #{project-value(
+            project.$page-navigator-control-active-color,
+            color-mix(in srgb, var(--theme-gray-900) 8%, transparent)
+        )};
+
+    // 투명도 단계
+    --theme-gray-0-alpha-0: color-mix(in srgb, var(--theme-gray-0) 0%, transparent);
+    --theme-gray-0-alpha-3: color-mix(in srgb, var(--theme-gray-0) 3%, transparent);
+    --theme-gray-0-alpha-4: color-mix(in srgb, var(--theme-gray-0) 4%, transparent);
+    --theme-gray-0-alpha-8: color-mix(in srgb, var(--theme-gray-0) 8%, transparent);
+    --theme-gray-0-alpha-10: color-mix(in srgb, var(--theme-gray-0) 10%, transparent);
+    --theme-gray-0-alpha-12: color-mix(in srgb, var(--theme-gray-0) 12%, transparent);
+    --theme-gray-0-alpha-14: color-mix(in srgb, var(--theme-gray-0) 14%, transparent);
+    --theme-gray-0-alpha-16: color-mix(in srgb, var(--theme-gray-0) 16%, transparent);
+    --theme-gray-0-alpha-18: color-mix(in srgb, var(--theme-gray-0) 18%, transparent);
+    --theme-gray-0-alpha-20: color-mix(in srgb, var(--theme-gray-0) 20%, transparent);
+    --theme-gray-0-alpha-24: color-mix(in srgb, var(--theme-gray-0) 24%, transparent);
+    --theme-gray-0-alpha-26: color-mix(in srgb, var(--theme-gray-0) 26%, transparent);
+    --theme-gray-0-alpha-28: color-mix(in srgb, var(--theme-gray-0) 28%, transparent);
+    --theme-gray-0-alpha-35: color-mix(in srgb, var(--theme-gray-0) 35%, transparent);
+    --theme-gray-0-alpha-56: color-mix(in srgb, var(--theme-gray-0) 56%, transparent);
+    --theme-gray-0-alpha-60: color-mix(in srgb, var(--theme-gray-0) 60%, transparent);
+    --theme-gray-0-alpha-70: color-mix(in srgb, var(--theme-gray-0) 70%, transparent);
+    --theme-gray-0-alpha-72: color-mix(in srgb, var(--theme-gray-0) 72%, transparent);
+    --theme-gray-0-alpha-76: color-mix(in srgb, var(--theme-gray-0) 76%, transparent);
+    --theme-gray-0-alpha-78: color-mix(in srgb, var(--theme-gray-0) 78%, transparent);
+    --theme-gray-0-alpha-80: color-mix(in srgb, var(--theme-gray-0) 80%, transparent);
+    --theme-gray-0-alpha-82: color-mix(in srgb, var(--theme-gray-0) 82%, transparent);
+    --theme-gray-0-alpha-86: color-mix(in srgb, var(--theme-gray-0) 86%, transparent);
+    --theme-gray-0-alpha-88: color-mix(in srgb, var(--theme-gray-0) 88%, transparent);
+    --theme-gray-0-alpha-90: color-mix(in srgb, var(--theme-gray-0) 90%, transparent);
+    --theme-gray-0-alpha-92: color-mix(in srgb, var(--theme-gray-0) 92%, transparent);
+    --theme-gray-50-alpha-78: color-mix(in srgb, var(--theme-gray-50) 78%, transparent);
+    --theme-gray-200-alpha-90: color-mix(in srgb, var(--theme-gray-200) 90%, transparent);
+    --theme-gray-200-alpha-100: color-mix(in srgb, var(--theme-gray-200) 100%, transparent);
+    --theme-gray-500-alpha-12: color-mix(in srgb, var(--theme-gray-500) 12%, transparent);
+    --theme-gray-700-alpha-8: color-mix(in srgb, var(--theme-gray-700) 8%, transparent);
+    --theme-gray-700-alpha-12: color-mix(in srgb, var(--theme-gray-700) 12%, transparent);
+    --theme-gray-700-alpha-14: color-mix(in srgb, var(--theme-gray-700) 14%, transparent);
+    --theme-gray-700-alpha-18: color-mix(in srgb, var(--theme-gray-700) 18%, transparent);
+    --theme-gray-700-alpha-45: color-mix(in srgb, var(--theme-gray-700) 45%, transparent);
+    --theme-gray-700-alpha-60: color-mix(in srgb, var(--theme-gray-700) 60%, transparent);
+    --theme-gray-700-alpha-70: color-mix(in srgb, var(--theme-gray-700) 70%, transparent);
+    --theme-gray-800-alpha-4: color-mix(in srgb, var(--theme-gray-800) 4%, transparent);
+    --theme-gray-900-alpha-0: color-mix(in srgb, var(--theme-gray-900) 0%, transparent);
+    --theme-gray-900-alpha-2: color-mix(in srgb, var(--theme-gray-900) 2%, transparent);
+    --theme-gray-900-alpha-4: color-mix(in srgb, var(--theme-gray-900) 4%, transparent);
+    --theme-gray-900-alpha-6: color-mix(in srgb, var(--theme-gray-900) 6%, transparent);
+    --theme-gray-900-alpha-8: color-mix(in srgb, var(--theme-gray-900) 8%, transparent);
+    --theme-gray-900-alpha-10: color-mix(in srgb, var(--theme-gray-900) 10%, transparent);
+    --theme-gray-900-alpha-12: color-mix(in srgb, var(--theme-gray-900) 12%, transparent);
+    --theme-gray-900-alpha-18: color-mix(in srgb, var(--theme-gray-900) 18%, transparent);
+    --theme-gray-900-alpha-22: color-mix(in srgb, var(--theme-gray-900) 22%, transparent);
+    --theme-gray-900-alpha-28: color-mix(in srgb, var(--theme-gray-900) 28%, transparent);
+    --theme-gray-900-alpha-42: color-mix(in srgb, var(--theme-gray-900) 42%, transparent);
+    --theme-gray-900-alpha-54: color-mix(in srgb, var(--theme-gray-900) 54%, transparent);
+    --theme-gray-900-alpha-55: color-mix(in srgb, var(--theme-gray-900) 55%, transparent);
+    --theme-gray-900-alpha-62: color-mix(in srgb, var(--theme-gray-900) 62%, transparent);
+    --theme-gray-900-alpha-70: color-mix(in srgb, var(--theme-gray-900) 70%, transparent);
+    --theme-gray-900-alpha-76: color-mix(in srgb, var(--theme-gray-900) 76%, transparent);
+    --theme-gray-900-alpha-80: color-mix(in srgb, var(--theme-gray-900) 80%, transparent);
+    --theme-primary-alpha-10: color-mix(in srgb, var(--theme-primary) 10%, transparent);
+    --theme-primary-alpha-12: color-mix(in srgb, var(--theme-primary) 12%, transparent);
+    --theme-primary-alpha-65: color-mix(in srgb, var(--theme-primary) 65%, transparent);
+    --theme-primary-50-alpha-55: color-mix(in srgb, var(--theme-primary-50) 55%, transparent);
+    --theme-primary-50-alpha-80: color-mix(in srgb, var(--theme-primary-50) 80%, transparent);
+    --theme-primary-50-alpha-90: color-mix(in srgb, var(--theme-primary-50) 90%, transparent);
+    --theme-primary-100-alpha-60: color-mix(in srgb, var(--theme-primary-100) 60%, transparent);
+    --theme-primary-100-alpha-72: color-mix(in srgb, var(--theme-primary-100) 72%, transparent);
+    --theme-primary-100-alpha-86: color-mix(in srgb, var(--theme-primary-100) 86%, transparent);
+    --theme-primary-100-alpha-90: color-mix(in srgb, var(--theme-primary-100) 90%, transparent);
+    --theme-primary-200-alpha-30: color-mix(in srgb, var(--theme-primary-200) 30%, transparent);
+    --theme-primary-200-alpha-32: color-mix(in srgb, var(--theme-primary-200) 32%, transparent);
+    --theme-primary-200-alpha-58: color-mix(in srgb, var(--theme-primary-200) 58%, transparent);
+    --theme-primary-400-alpha-62: color-mix(in srgb, var(--theme-primary-400) 62%, transparent);
+    --theme-primary-500-alpha-8: color-mix(in srgb, var(--theme-primary-500) 8%, transparent);
+    --theme-primary-500-alpha-12: color-mix(in srgb, var(--theme-primary-500) 12%, transparent);
+    --theme-primary-500-alpha-14: color-mix(in srgb, var(--theme-primary-500) 14%, transparent);
+    --theme-primary-500-alpha-16: color-mix(in srgb, var(--theme-primary-500) 16%, transparent);
+    --theme-primary-500-alpha-18: color-mix(in srgb, var(--theme-primary-500) 18%, transparent);
+    --theme-primary-500-alpha-25: color-mix(in srgb, var(--theme-primary-500) 25%, transparent);
+    --theme-primary-500-alpha-30: color-mix(in srgb, var(--theme-primary-500) 30%, transparent);
+    --theme-primary-500-alpha-35: color-mix(in srgb, var(--theme-primary-500) 35%, transparent);
+    --theme-primary-500-alpha-54: color-mix(in srgb, var(--theme-primary-500) 54%, transparent);
+    --theme-primary-500-alpha-55: color-mix(in srgb, var(--theme-primary-500) 55%, transparent);
+    --theme-primary-500-alpha-60: color-mix(in srgb, var(--theme-primary-500) 60%, transparent);
+    --theme-primary-700-alpha-8: color-mix(in srgb, var(--theme-primary-700) 8%, transparent);
+    --theme-primary-900-alpha-6: color-mix(in srgb, var(--theme-primary-900) 6%, transparent);
+    --theme-primary-900-alpha-8: color-mix(in srgb, var(--theme-primary-900) 8%, transparent);
+    --theme-primary-900-alpha-10: color-mix(in srgb, var(--theme-primary-900) 10%, transparent);
+    --theme-primary-900-alpha-12: color-mix(in srgb, var(--theme-primary-900) 12%, transparent);
+    --theme-primary-900-alpha-14: color-mix(in srgb, var(--theme-primary-900) 14%, transparent);
+    --theme-secondary-alpha-8: color-mix(in srgb, var(--theme-secondary) 8%, transparent);
+    --theme-secondary-alpha-12: color-mix(in srgb, var(--theme-secondary) 12%, transparent);
+    --theme-secondary-alpha-14: color-mix(in srgb, var(--theme-secondary) 14%, transparent);
+    --theme-secondary-alpha-18: color-mix(in srgb, var(--theme-secondary) 18%, transparent);
+    --theme-secondary-alpha-60: color-mix(in srgb, var(--theme-secondary) 60%, transparent);
+    --theme-status-error-alpha-8: color-mix(in srgb, var(--theme-status-error) 8%, transparent);
+    --theme-status-error-alpha-10: color-mix(in srgb, var(--theme-status-error) 10%, transparent);
+    --theme-status-error-alpha-12: color-mix(in srgb, var(--theme-status-error) 12%, transparent);
+    --theme-status-error-alpha-14: color-mix(in srgb, var(--theme-status-error) 14%, transparent);
+    --theme-status-error-alpha-18: color-mix(in srgb, var(--theme-status-error) 18%, transparent);
+    --theme-status-error-alpha-60: color-mix(in srgb, var(--theme-status-error) 60%, transparent);
+    --theme-status-info-alpha-8: color-mix(in srgb, var(--theme-status-info) 8%, transparent);
+    --theme-status-info-alpha-12: color-mix(in srgb, var(--theme-status-info) 12%, transparent);
+    --theme-status-info-alpha-14: color-mix(in srgb, var(--theme-status-info) 14%, transparent);
+    --theme-status-info-alpha-18: color-mix(in srgb, var(--theme-status-info) 18%, transparent);
+    --theme-status-info-alpha-25: color-mix(in srgb, var(--theme-status-info) 25%, transparent);
+    --theme-status-info-alpha-60: color-mix(in srgb, var(--theme-status-info) 60%, transparent);
+    --theme-status-success-alpha-8: color-mix(in srgb, var(--theme-status-success) 8%, transparent);
+    --theme-status-success-alpha-12: color-mix(in srgb, var(--theme-status-success) 12%, transparent);
+    --theme-status-success-alpha-14: color-mix(in srgb, var(--theme-status-success) 14%, transparent);
+    --theme-status-success-alpha-18: color-mix(in srgb, var(--theme-status-success) 18%, transparent);
+    --theme-status-success-alpha-60: color-mix(in srgb, var(--theme-status-success) 60%, transparent);
+    --theme-status-warning-alpha-8: color-mix(in srgb, var(--theme-status-warning) 8%, transparent);
+    --theme-status-warning-alpha-12: color-mix(in srgb, var(--theme-status-warning) 12%, transparent);
+    --theme-status-warning-alpha-14: color-mix(in srgb, var(--theme-status-warning) 14%, transparent);
+    --theme-status-warning-alpha-18: color-mix(in srgb, var(--theme-status-warning) 18%, transparent);
+    --theme-status-warning-alpha-60: color-mix(in srgb, var(--theme-status-warning) 60%, transparent);
+
+    // 소수점은 CSS 변수 이름에서 하이픈으로 표기합니다.
+    --theme-gray-900-alpha-1-5: color-mix(in srgb, var(--theme-gray-900) 1.5%, transparent);
+    --theme-gray-900-alpha-1-8: color-mix(in srgb, var(--theme-gray-900) 1.8%, transparent);
+    --theme-gray-900-alpha-2-5: color-mix(in srgb, var(--theme-gray-900) 2.5%, transparent);
+    --theme-gray-900-alpha-3-5: color-mix(in srgb, var(--theme-gray-900) 3.5%, transparent);
+
+    // 버튼의 hover / active / focus 파생 색상
+    --theme-primary-500-hover: color-mix(in srgb, black 10%, var(--theme-primary-500));
+    --theme-primary-500-active: color-mix(in srgb, black 16%, var(--theme-primary-500));
+    --theme-primary-500-focus: color-mix(in srgb, white 30%, var(--theme-primary-500));
+    --theme-secondary-hover: color-mix(in srgb, black 10%, var(--theme-secondary));
+    --theme-secondary-active: color-mix(in srgb, black 16%, var(--theme-secondary));
+    --theme-secondary-focus: color-mix(in srgb, white 30%, var(--theme-secondary));
+    --theme-gray-700-hover: color-mix(in srgb, black 10%, var(--theme-gray-700));
+    --theme-gray-700-active: color-mix(in srgb, black 16%, var(--theme-gray-700));
+    --theme-gray-700-focus: color-mix(in srgb, white 30%, var(--theme-gray-700));
+    --theme-status-error-hover: color-mix(in srgb, black 10%, var(--theme-status-error));
+    --theme-status-error-active: color-mix(in srgb, black 16%, var(--theme-status-error));
+    --theme-status-error-focus: color-mix(in srgb, white 30%, var(--theme-status-error));
+    --theme-status-warning-hover: color-mix(in srgb, black 10%, var(--theme-status-warning));
+    --theme-status-warning-active: color-mix(in srgb, black 16%, var(--theme-status-warning));
+    --theme-status-warning-focus: color-mix(in srgb, white 30%, var(--theme-status-warning));
+    --theme-status-success-hover: color-mix(in srgb, black 10%, var(--theme-status-success));
+    --theme-status-success-active: color-mix(in srgb, black 16%, var(--theme-status-success));
+    --theme-status-success-focus: color-mix(in srgb, white 30%, var(--theme-status-success));
+    --theme-status-info-hover: color-mix(in srgb, black 10%, var(--theme-status-info));
+    --theme-status-info-active: color-mix(in srgb, black 16%, var(--theme-status-info));
+    --theme-status-info-focus: color-mix(in srgb, white 30%, var(--theme-status-info));
+}
+
+// ============================================
+// 컴포넌트 및 레이아웃 토큰
+// 컴포넌트에서는 아래 의미 기반 변수만 사용합니다.
+// 실제 색상 변경은 우측의 --theme-* 연결값을 수정합니다.
+// ============================================
+:root {
+    // ----------------------------------------
+    // 입력 컴포넌트
+    // ----------------------------------------
+
+    // Button
+    --bg-button: var(--theme-gray-0);
+    --bg-button-gray-0-alpha-60: var(--theme-gray-0-alpha-60);
+    --bg-button-gray-0-alpha-80: var(--theme-gray-0-alpha-80);
+    --bg-button-gray-900-alpha-10: var(--theme-gray-900-alpha-10);
+    --bg-button-gray-900-alpha-6: var(--theme-gray-900-alpha-6);
+    --color-button: var(--theme-gray-0);
+    --color-button-gray-700: var(--theme-gray-700);
+    --color-button-gray-900: var(--theme-gray-900);
+    --outline-button: var(--theme-primary-300);
+
+    // Button tones
+
+    // Primary
+    --bg-button-primary: var(--theme-primary-500);
+    --bg-button-primary-hover: var(--theme-primary-500-hover);
+    --bg-button-primary-active: var(--theme-primary-500-active);
+    --color-button-primary: var(--theme-primary-500);
+    --color-button-primary-hover: var(--theme-primary-500-hover);
+    --color-button-primary-active: var(--theme-primary-500-active);
+    --border-button-primary: var(--theme-primary-500);
+    --border-button-primary-hover: var(--theme-primary-500-hover);
+    --border-button-primary-active: var(--theme-primary-500-active);
+    --outline-button-primary: var(--theme-primary-500-focus);
+    --bg-icon-button-primary-soft: var(--theme-primary-500-alpha-8);
+    --bg-icon-button-primary-soft-hover: var(--theme-primary-500-alpha-12);
+    --bg-icon-button-primary-soft-active: var(--theme-primary-500-alpha-18);
+    --border-icon-button-primary: var(--theme-primary-500-alpha-60);
+    --bg-icon-button-primary-outline-hover: var(--theme-primary-500-alpha-8);
+    --bg-icon-button-primary-outline-active: var(--theme-primary-500-alpha-14);
+
+    // Secondary
+    --bg-button-secondary: var(--theme-secondary);
+    --bg-button-secondary-hover: var(--theme-secondary-hover);
+    --bg-button-secondary-active: var(--theme-secondary-active);
+    --color-button-secondary: var(--theme-secondary);
+    --color-button-secondary-hover: var(--theme-secondary-hover);
+    --color-button-secondary-active: var(--theme-secondary-active);
+    --border-button-secondary: var(--theme-secondary);
+    --border-button-secondary-hover: var(--theme-secondary-hover);
+    --border-button-secondary-active: var(--theme-secondary-active);
+    --outline-button-secondary: var(--theme-secondary-focus);
+    --bg-icon-button-secondary-soft: var(--theme-secondary-alpha-8);
+    --bg-icon-button-secondary-soft-hover: var(--theme-secondary-alpha-12);
+    --bg-icon-button-secondary-soft-active: var(--theme-secondary-alpha-18);
+    --border-icon-button-secondary: var(--theme-secondary-alpha-60);
+    --bg-icon-button-secondary-outline-hover: var(--theme-secondary-alpha-8);
+    --bg-icon-button-secondary-outline-active: var(--theme-secondary-alpha-14);
+
+    // Gray
+    --bg-button-gray: var(--theme-gray-700);
+    --bg-button-gray-hover: var(--theme-gray-700-hover);
+    --bg-button-gray-active: var(--theme-gray-700-active);
+    --color-button-gray: var(--theme-gray-700);
+    --color-button-gray-hover: var(--theme-gray-700-hover);
+    --color-button-gray-active: var(--theme-gray-700-active);
+    --border-button-gray: var(--theme-gray-700);
+    --border-button-gray-hover: var(--theme-gray-700-hover);
+    --border-button-gray-active: var(--theme-gray-700-active);
+    --outline-button-gray: var(--theme-gray-700-focus);
+    --bg-icon-button-gray-soft: var(--theme-gray-700-alpha-8);
+    --bg-icon-button-gray-soft-hover: var(--theme-gray-700-alpha-12);
+    --bg-icon-button-gray-soft-active: var(--theme-gray-700-alpha-18);
+    --border-icon-button-gray: var(--theme-gray-700-alpha-60);
+    --bg-icon-button-gray-outline-hover: var(--theme-gray-700-alpha-8);
+    --bg-icon-button-gray-outline-active: var(--theme-gray-700-alpha-14);
+
+    // Danger
+    --bg-button-danger: var(--theme-status-error);
+    --bg-button-danger-hover: var(--theme-status-error-hover);
+    --bg-button-danger-active: var(--theme-status-error-active);
+    --color-button-danger: var(--theme-status-error);
+    --color-button-danger-hover: var(--theme-status-error-hover);
+    --color-button-danger-active: var(--theme-status-error-active);
+    --border-button-danger: var(--theme-status-error);
+    --border-button-danger-hover: var(--theme-status-error-hover);
+    --border-button-danger-active: var(--theme-status-error-active);
+    --outline-button-danger: var(--theme-status-error-focus);
+    --bg-icon-button-danger-soft: var(--theme-status-error-alpha-8);
+    --bg-icon-button-danger-soft-hover: var(--theme-status-error-alpha-12);
+    --bg-icon-button-danger-soft-active: var(--theme-status-error-alpha-18);
+    --border-icon-button-danger: var(--theme-status-error-alpha-60);
+    --bg-icon-button-danger-outline-hover: var(--theme-status-error-alpha-8);
+    --bg-icon-button-danger-outline-active: var(--theme-status-error-alpha-14);
+
+    // Warning
+    --bg-button-warning: var(--theme-status-warning);
+    --bg-button-warning-hover: var(--theme-status-warning-hover);
+    --bg-button-warning-active: var(--theme-status-warning-active);
+    --color-button-warning: var(--theme-status-warning);
+    --color-button-warning-hover: var(--theme-status-warning-hover);
+    --color-button-warning-active: var(--theme-status-warning-active);
+    --border-button-warning: var(--theme-status-warning);
+    --border-button-warning-hover: var(--theme-status-warning-hover);
+    --border-button-warning-active: var(--theme-status-warning-active);
+    --outline-button-warning: var(--theme-status-warning-focus);
+    --bg-icon-button-warning-soft: var(--theme-status-warning-alpha-8);
+    --bg-icon-button-warning-soft-hover: var(--theme-status-warning-alpha-12);
+    --bg-icon-button-warning-soft-active: var(--theme-status-warning-alpha-18);
+    --border-icon-button-warning: var(--theme-status-warning-alpha-60);
+    --bg-icon-button-warning-outline-hover: var(--theme-status-warning-alpha-8);
+    --bg-icon-button-warning-outline-active: var(--theme-status-warning-alpha-14);
+
+    // Success
+    --bg-button-success: var(--theme-status-success);
+    --bg-button-success-hover: var(--theme-status-success-hover);
+    --bg-button-success-active: var(--theme-status-success-active);
+    --color-button-success: var(--theme-status-success);
+    --color-button-success-hover: var(--theme-status-success-hover);
+    --color-button-success-active: var(--theme-status-success-active);
+    --border-button-success: var(--theme-status-success);
+    --border-button-success-hover: var(--theme-status-success-hover);
+    --border-button-success-active: var(--theme-status-success-active);
+    --outline-button-success: var(--theme-status-success-focus);
+    --bg-icon-button-success-soft: var(--theme-status-success-alpha-8);
+    --bg-icon-button-success-soft-hover: var(--theme-status-success-alpha-12);
+    --bg-icon-button-success-soft-active: var(--theme-status-success-alpha-18);
+    --border-icon-button-success: var(--theme-status-success-alpha-60);
+    --bg-icon-button-success-outline-hover: var(--theme-status-success-alpha-8);
+    --bg-icon-button-success-outline-active: var(--theme-status-success-alpha-14);
+
+    // Info
+    --bg-button-info: var(--theme-status-info);
+    --bg-button-info-hover: var(--theme-status-info-hover);
+    --bg-button-info-active: var(--theme-status-info-active);
+    --color-button-info: var(--theme-status-info);
+    --color-button-info-hover: var(--theme-status-info-hover);
+    --color-button-info-active: var(--theme-status-info-active);
+    --border-button-info: var(--theme-status-info);
+    --border-button-info-hover: var(--theme-status-info-hover);
+    --border-button-info-active: var(--theme-status-info-active);
+    --outline-button-info: var(--theme-status-info-focus);
+    --bg-icon-button-info-soft: var(--theme-status-info-alpha-8);
+    --bg-icon-button-info-soft-hover: var(--theme-status-info-alpha-12);
+    --bg-icon-button-info-soft-active: var(--theme-status-info-alpha-18);
+    --border-icon-button-info: var(--theme-status-info-alpha-60);
+    --bg-icon-button-info-outline-hover: var(--theme-status-info-alpha-8);
+    --bg-icon-button-info-outline-active: var(--theme-status-info-alpha-14);
+
+    // Checkbox / Radio / Chip
+    --bg-checkbox: var(--theme-bg-white);
+    --bg-checkbox-05-gray-disabled: var(--theme-color-05-gray-disabled);
+    --bg-checkbox-black: var(--theme-bg-black);
+    --bg-checkbox-gray-0: var(--theme-gray-0);
+    --bg-checkbox-gray-100: var(--theme-gray-100);
+    --bg-checkbox-gray-200: var(--theme-gray-200);
+    --bg-checkbox-gray-50: var(--theme-gray-50);
+    --bg-checkbox-light: var(--theme-bg-light);
+    --bg-checkbox-primary: var(--theme-primary);
+    --bg-checkbox-primary-100: var(--theme-primary-100);
+    --bg-checkbox-primary-50: var(--theme-primary-50);
+    --bg-checkbox-primary-500: var(--theme-primary-500);
+    --bg-checkbox-regular: var(--theme-bg-regular);
+    --color-checkbox: var(--theme-color-03-gray);
+    --color-checkbox-gray-0: var(--theme-gray-0);
+    --color-checkbox-gray-400: var(--theme-gray-400);
+    --color-checkbox-gray-600: var(--theme-gray-600);
+    --color-checkbox-gray-700: var(--theme-gray-700);
+    --color-checkbox-primary-700: var(--theme-primary-700);
+    --color-checkbox-status-error: var(--theme-status-error);
+    --color-checkbox-status-success: var(--theme-status-success);
+    --color-checkbox-status-warning: var(--theme-status-warning);
+    --border-checkbox: var(--theme-line-regular);
+    --border-checkbox-black: var(--theme-bg-black);
+    --border-checkbox-disabled: var(--theme-line-disabled);
+    --border-checkbox-gray-200: var(--theme-gray-200);
+    --border-checkbox-gray-300: var(--theme-gray-300);
+    --border-checkbox-gray-50: var(--theme-gray-50);
+    --border-checkbox-primary: var(--theme-primary);
+    --border-checkbox-primary-100: var(--theme-primary-100);
+    --border-checkbox-primary-500: var(--theme-primary-500);
+    --border-checkbox-status-error: var(--theme-status-error);
+    --border-checkbox-status-success: var(--theme-status-success);
+    --border-checkbox-status-warning: var(--theme-status-warning);
+    --outline-checkbox: var(--theme-primary-300);
+    --shadow-checkbox: var(--theme-gray-900-alpha-4);
+    --shadow-checkbox-gray-800-alpha-4: var(--theme-gray-800-alpha-4);
+    --shadow-checkbox-gray-900-alpha-18: var(--theme-gray-900-alpha-18);
+    --shadow-checkbox-gray-900-alpha-8: var(--theme-gray-900-alpha-8);
+    --shadow-checkbox-primary-700-alpha-8: var(--theme-primary-700-alpha-8);
+    --fill-checkbox: var(--theme-color-05-gray-disabled);
+
+    // Date Picker
+    --bg-date-picker: var(--theme-gray-100);
+    --bg-date-picker-light: var(--theme-bg-light);
+    --bg-date-picker-primary: var(--theme-primary);
+    --bg-date-picker-primary-50: var(--theme-primary-50);
+    --bg-date-picker-white: var(--theme-bg-white);
+    --color-date-picker: var(--theme-gray-500);
+    --color-date-picker-01-white: var(--theme-color-01-white);
+    --color-date-picker-02-black: var(--theme-color-02-black);
+    --color-date-picker-03-gray: var(--theme-color-03-gray);
+    --color-date-picker-04-gray: var(--theme-color-04-gray);
+    --color-date-picker-05-gray-disabled: var(--theme-color-05-gray-disabled);
+    --color-date-picker-gray-700: var(--theme-gray-700);
+    --color-date-picker-primary-600: var(--theme-primary-600);
+    --color-date-picker-primary-700: var(--theme-primary-700);
+    --color-date-picker-status-error: var(--theme-status-error);
+    --border-date-picker: var(--theme-status-error);
+    --border-date-picker-light: var(--theme-line-light);
+    --border-date-picker-regular: var(--theme-line-regular);
+    --border-date-picker-status-success: var(--theme-status-success);
+    --border-date-picker-status-warning: var(--theme-status-warning);
+    --shadow-date-picker: var(--theme-gray-900-alpha-8);
+    --shadow-date-picker-primary-300: var(--theme-primary-300);
+
+    // Form Field
+    --bg-form-field: var(--theme-bg-white);
+    --bg-form-field-light: var(--theme-bg-light);
+    --color-form-field: var(--theme-gray-800);
+    --color-form-field-02-black: var(--theme-color-02-black);
+    --color-form-field-05-gray-disabled: var(--theme-color-05-gray-disabled);
+    --color-form-field-gray-400: var(--theme-gray-400);
+    --color-form-field-gray-500: var(--theme-gray-500);
+    --color-form-field-status-error: var(--theme-status-error);
+    --color-form-field-status-success: var(--theme-status-success);
+    --color-form-field-status-warning: var(--theme-status-warning);
+    --border-form-field: var(--theme-line-regular);
+    --border-form-field-black: var(--theme-line-black);
+    --border-form-field-status-error: var(--theme-status-error);
+    --border-form-field-status-success: var(--theme-status-success);
+    --border-form-field-status-warning: var(--theme-status-warning);
+
+    // Input
+    --color-input: var(--theme-color-04-gray);
+
+    // Select
+    --bg-select: var(--theme-bg-white);
+    --bg-select-light: var(--theme-bg-light);
+    --bg-select-regular: var(--theme-bg-regular);
+    --color-select: var(--theme-color-04-gray);
+    --color-select-02-black: var(--theme-color-02-black);
+    --color-select-05-gray-disabled: var(--theme-color-05-gray-disabled);
+    --color-select-gray-700: var(--theme-gray-700);
+    --border-select: var(--theme-line-regular);
+    --shadow-select: var(--theme-gray-900-alpha-8);
+
+    // Textarea
+    --bg-textarea: var(--theme-gray-0);
+    --bg-textarea-gray-50: var(--theme-gray-50);
+    --color-textarea: var(--theme-gray-800);
+    --color-textarea-gray-400: var(--theme-gray-400);
+    --border-textarea: var(--theme-gray-200);
+    --border-textarea-primary-500: var(--theme-primary-500);
+    --border-textarea-status-error: var(--theme-status-error);
+    --border-textarea-status-success: var(--theme-status-success);
+    --border-textarea-status-warning: var(--theme-status-warning);
+    --shadow-textarea: var(--theme-primary-500-alpha-12);
+    --shadow-textarea-status-error-alpha-12: var(--theme-status-error-alpha-12);
+
+    // Upload File
+    --bg-upload-file: var(--theme-bg-white);
+    --bg-upload-file-light: var(--theme-bg-light);
+    --bg-upload-file-primary-50: var(--theme-primary-50);
+    --color-upload-file: var(--theme-primary);
+    --color-upload-file-gray-400: var(--theme-gray-400);
+    --color-upload-file-gray-600: var(--theme-gray-600);
+    --color-upload-file-gray-900: var(--theme-gray-900);
+    --border-upload-file: var(--theme-line-regular);
+    --border-upload-file-primary: var(--theme-primary);
+
+    // Upload Image
+    --bg-upload-image: var(--theme-bg-white);
+    --bg-upload-image-light: var(--theme-bg-light);
+    --bg-upload-image-primary-50: var(--theme-primary-50);
+    --color-upload-image: var(--theme-primary);
+    --color-upload-image-gray-400: var(--theme-gray-400);
+    --color-upload-image-gray-500: var(--theme-gray-500);
+    --color-upload-image-gray-600: var(--theme-gray-600);
+    --color-upload-image-gray-900: var(--theme-gray-900);
+    --border-upload-image: var(--theme-line-regular);
+    --border-upload-image-primary: var(--theme-primary);
+
+    // ----------------------------------------
+    // 데이터 및 피드백 컴포넌트
+    // ----------------------------------------
+
+    // Accordion
+    --bg-accordion: var(--theme-gray-0);
+    --color-accordion: var(--theme-gray-900);
+    --color-accordion-gray-500: var(--theme-gray-500);
+    --color-accordion-gray-600: var(--theme-gray-600);
+    --border-accordion: var(--theme-gray-200);
+    --border-accordion-gray-100: var(--theme-gray-100);
+
+    // AG Grid
+    --bg-ag-grid: var(--theme-gray-200);
+    --bg-ag-grid-gray-0: var(--theme-gray-0);
+    --bg-ag-grid-gray-0-alpha-90: var(--theme-gray-0-alpha-90);
+    --bg-ag-grid-gray-200-alpha-100: var(--theme-gray-200-alpha-100);
+    --bg-ag-grid-gray-50: var(--theme-gray-50);
+    --bg-ag-grid-primary: var(--theme-primary);
+    --bg-ag-grid-primary-100-alpha-60: var(--theme-primary-100-alpha-60);
+    --bg-ag-grid-primary-50-alpha-90: var(--theme-primary-50-alpha-90);
+    --color-ag-grid: var(--theme-gray-500);
+    --color-ag-grid-gray-0: var(--theme-gray-0);
+    --color-ag-grid-gray-200: var(--theme-gray-200);
+    --color-ag-grid-gray-50: var(--theme-gray-50);
+    --color-ag-grid-gray-600: var(--theme-gray-600);
+    --color-ag-grid-gray-700: var(--theme-gray-700);
+    --color-ag-grid-gray-800: var(--theme-gray-800);
+    --color-ag-grid-gray-900: var(--theme-gray-900);
+    --color-ag-grid-primary: var(--theme-primary);
+    --color-ag-grid-primary-50-alpha-80: var(--theme-primary-50-alpha-80);
+    --border-ag-grid: var(--theme-gray-100);
+    --border-ag-grid-gray-200: var(--theme-gray-200);
+    --border-ag-grid-gray-300: var(--theme-gray-300);
+    --border-ag-grid-gray-900-alpha-6: var(--theme-gray-900-alpha-6);
+    --border-ag-grid-primary: var(--theme-primary);
+    --shadow-ag-grid: var(--theme-gray-900-alpha-6);
+    --shadow-ag-grid-gray-900-alpha-12: var(--theme-gray-900-alpha-12);
+    --shadow-ag-grid-gray-900-alpha-2: var(--theme-gray-900-alpha-2);
+    --shadow-ag-grid-primary-alpha-10: var(--theme-primary-alpha-10);
+    --shadow-ag-grid-primary-alpha-12: var(--theme-primary-alpha-12);
+    --shadow-ag-grid-primary-alpha-65: var(--theme-primary-alpha-65);
+
+    // Grid Search
+    --color-grid-search-muted: var(--theme-gray-600);
+
+    // Chart
+    --bg-chart: var(--theme-gray-0);
+    --color-chart: var(--theme-gray-700);
+    --border-chart: var(--theme-gray-200);
+    --border-chart-grid: var(--theme-gray-900-alpha-6);
+
+    // Gauge
+    --color-gauge: var(--theme-gray-200);
+    --color-gauge-gray-600: var(--theme-gray-600);
+    --color-gauge-gray-900: var(--theme-gray-900);
+    --color-gauge-primary: var(--theme-primary);
+    --shadow-gauge: var(--theme-gray-900-alpha-18);
+    --fill-gauge: var(--theme-primary);
+    --stroke-gauge: var(--theme-gray-0);
+
+    // Modal
+    --bg-modal: var(--theme-primary-500-alpha-18);
+    --bg-modal-gray-0-alpha-0: var(--theme-gray-0-alpha-0);
+    --bg-modal-gray-0-alpha-70: var(--theme-gray-0-alpha-70);
+    --bg-modal-gray-0-alpha-78: var(--theme-gray-0-alpha-78);
+    --bg-modal-gray-0-alpha-92: var(--theme-gray-0-alpha-92);
+    --bg-modal-gray-900-alpha-0: var(--theme-gray-900-alpha-0);
+    --bg-modal-gray-900-alpha-4: var(--theme-gray-900-alpha-4);
+    --bg-modal-gray-900-alpha-55: var(--theme-gray-900-alpha-55);
+    --bg-modal-primary-100-alpha-90: var(--theme-primary-100-alpha-90);
+    --bg-modal-white: var(--theme-bg-white);
+    --color-modal: var(--theme-gray-900);
+    --color-modal-gray-600: var(--theme-gray-600);
+    --color-modal-gray-700: var(--theme-gray-700);
+    --color-modal-gray-900-alpha-76: var(--theme-gray-900-alpha-76);
+    --border-modal: var(--theme-gray-0-alpha-18);
+    --border-modal-gray-900-alpha-12: var(--theme-gray-900-alpha-12);
+    --border-modal-gray-900-alpha-8: var(--theme-gray-900-alpha-8);
+    --border-modal-primary-500: var(--theme-primary-500);
+    --border-modal-primary-500-alpha-54: var(--theme-primary-500-alpha-54);
+    --shadow-modal: var(--theme-gray-900-alpha-28);
+    --shadow-modal-gray-900-alpha-18: var(--theme-gray-900-alpha-18);
+    --shadow-modal-primary-500-alpha-16: var(--theme-primary-500-alpha-16);
+
+    // Pagination
+    --bg-pagination: var(--theme-gray-0);
+    --bg-pagination-gray-50: var(--theme-gray-50);
+    --bg-pagination-primary-50: var(--theme-primary-50);
+    --bg-pagination-primary-500: var(--theme-primary-500);
+    --color-pagination: var(--theme-gray-600);
+    --color-pagination-gray-0: var(--theme-gray-0);
+    --color-pagination-gray-300: var(--theme-gray-300);
+    --color-pagination-gray-900: var(--theme-gray-900);
+    --color-pagination-primary-500: var(--theme-primary-500);
+    --border-pagination: var(--theme-gray-200);
+    --border-pagination-primary-300: var(--theme-primary-300);
+    --border-pagination-primary-500: var(--theme-primary-500);
+    --outline-pagination: var(--theme-primary-500-alpha-35);
+
+    // Progress
+    --bg-progress: var(--theme-gray-200);
+    --bg-progress-gray-400: var(--theme-gray-400);
+    --bg-progress-primary: var(--theme-primary);
+    --color-progress: var(--theme-gray-800);
+    --color-progress-gray-500: var(--theme-gray-500);
+    --color-progress-gray-600: var(--theme-gray-600);
+    --color-progress-gray-900-alpha-80: var(--theme-gray-900-alpha-80);
+    --border-progress: var(--theme-gray-0);
+    --shadow-progress: var(--theme-gray-900-alpha-18);
+    --stroke-progress: var(--theme-gray-200);
+    --stroke-progress-primary: var(--theme-primary);
+
+    // Section
+    --bg-section: var(--theme-gray-0);
+    --color-section: var(--theme-gray-900);
+    --color-section-gray-600: var(--theme-gray-600);
+    --border-section: var(--theme-gray-200);
+
+    // Table
+    --bg-table: var(--theme-bg-white);
+    --bg-table-light: var(--theme-bg-light);
+    --bg-table-regular: var(--theme-bg-regular);
+    --color-table: var(--theme-gray-900);
+    --color-table-05-gray-disabled: var(--theme-color-05-gray-disabled);
+    --color-table-gray-500: var(--theme-gray-500);
+    --color-table-gray-600: var(--theme-gray-600);
+    --color-table-gray-700: var(--theme-gray-700);
+    --color-table-gray-800: var(--theme-gray-800);
+    --color-table-status-error: var(--theme-status-error);
+    --border-table: var(--theme-line-regular);
+    --border-table-light: var(--theme-line-light);
+    --border-table-primary: var(--theme-primary);
+
+    // Tabs
+    --bg-tabs: var(--theme-gray-100);
+    --bg-tabs-gray-0: var(--theme-gray-0);
+    --bg-tabs-gray-50: var(--theme-gray-50);
+    --bg-tabs-primary-50: var(--theme-primary-50);
+    --bg-tabs-primary-500: var(--theme-primary-500);
+    --color-tabs: var(--theme-gray-500);
+    --color-tabs-gray-300: var(--theme-gray-300);
+    --color-tabs-gray-400: var(--theme-gray-400);
+    --color-tabs-gray-600: var(--theme-gray-600);
+    --color-tabs-gray-700: var(--theme-gray-700);
+    --color-tabs-primary-500: var(--theme-primary-500);
+    --color-tabs-primary-600: var(--theme-primary-600);
+    --border-tabs: var(--theme-gray-200);
+    --border-tabs-gray-0: var(--theme-gray-0);
+    --outline-tabs: var(--theme-primary-500-alpha-35);
+    --outline-tabs-primary-500-alpha-25: var(--theme-primary-500-alpha-25);
+    --shadow-tabs: var(--theme-gray-900-alpha-8);
+
+    // ----------------------------------------
+    // 애플리케이션 레이아웃
+    // ----------------------------------------
+
+    // Layout
+    --bg-layout: var(--theme-header-background);
+    --bg-layout-gray-0: var(--theme-gray-0);
+    --bg-layout-header-active-color: var(--theme-header-active-color);
+    --bg-layout-header-hover-color: var(--theme-header-hover-color);
+    --color-layout: var(--theme-gray-800);
+    --color-layout-gray-500: var(--theme-gray-500);
+    --color-layout-gray-900: var(--theme-gray-900);
+    --border-layout: var(--theme-gray-200);
+
+    // LNB
+    --bg-lnb: var(--theme-lnb-background);
+    --bg-lnb-gray-0-alpha-20: var(--theme-gray-0-alpha-20);
+    --bg-lnb-lnb-active-color: var(--theme-lnb-active-color);
+    --bg-lnb-lnb-hover-color: var(--theme-lnb-hover-color);
+    --color-lnb: var(--theme-gray-0);
+    --color-lnb-gray-0-alpha-76: var(--theme-gray-0-alpha-76);
+    --color-lnb-gray-0-alpha-86: var(--theme-gray-0-alpha-86);
+    --border-lnb: var(--theme-gray-0-alpha-8);
+    --outline-lnb: var(--theme-gray-0-alpha-35);
+    --shadow-lnb: var(--theme-gray-900-alpha-12);
+    --shadow-lnb-gray-0-alpha-18: var(--theme-gray-0-alpha-18);
+
+    // Page Tabs
+    --bg-page-tabs: var(--theme-page-navigator-background);
+    --bg-page-tabs-page-navigator-active-color: var(--theme-page-navigator-active-color);
+    --bg-page-tabs-page-navigator-control-active-color: var(--theme-page-navigator-control-active-color);
+    --bg-page-tabs-page-navigator-hover-color: var(--theme-page-navigator-hover-color);
+    --color-page-tabs: var(--theme-gray-700);
+    --color-page-tabs-gray-600: var(--theme-gray-600);
+    --color-page-tabs-page-navigator-accent-color: var(--theme-page-navigator-accent-color);
+
+    // Responsive Layout
+    --bg-responsive-layout: var(--theme-gray-900-alpha-42);
+    --shadow-responsive-layout: var(--theme-gray-900-alpha-22);
+
+    // Workspace Pane
+    --bg-workspace-pane: var(--theme-gray-0);
+    --border-workspace-pane: var(--theme-gray-200-alpha-90);
+}
+
+// ============================================
+// 레이아웃 크기
+// ============================================
+:root {
+    --width-sidebar: 260px;
+}

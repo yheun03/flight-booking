@@ -1,0 +1,88 @@
+@use '../abstract' as *;
+
+/* =========================================
+   Base: Form Field
+========================================= */
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+
+    /* -------------------------
+       Element
+    ------------------------- */
+
+    &__label,
+    &__hint {
+        @include font(b3, rg);
+        color: var(--color-form-field-02-black);
+        margin-bottom: 12px;
+        transition: 0.15s;
+    }
+
+    &__hint {
+        margin-bottom: unset;
+        margin-top: 8px;
+    }
+
+    &__control {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background-color: var(--bg-form-field);
+        border: 1px solid var(--border-form-field);
+        overflow: hidden;
+        transition: 0.15s;
+
+        &:hover {
+            background-color: var(--bg-form-field-light);
+        }
+
+        &:focus,
+        &:focus-within {
+            border-color: var(--border-form-field-black);
+        }
+    }
+
+    /* -------------------------
+       State
+    ------------------------- */
+
+    &.is-disabled {
+        .form-field__control {
+            cursor: not-allowed;
+            background-color: var(--bg-form-field-light);
+            color: var(--color-form-field-05-gray-disabled);
+        }
+    }
+
+    &.is-error {
+        .form-field__control {
+            border-color: var(--border-form-field-status-error);
+        }
+
+        .form-field__hint {
+            color: var(--color-form-field-status-error);
+        }
+    }
+
+    &.is-warning {
+        .form-field__control {
+            border-color: var(--border-form-field-status-warning);
+        }
+
+        .form-field__hint {
+            color: var(--color-form-field-status-warning);
+        }
+    }
+
+    &.is-success {
+        .form-field__control {
+            border-color: var(--border-form-field-status-success);
+        }
+
+        .form-field__hint {
+            color: var(--color-form-field-status-success);
+        }
+    }
+}

@@ -1,0 +1,578 @@
+@use '../../abstract' as *;
+@use 'sass:map';
+@use 'icon';
+
+/* =========================================================
+   Tokens
+========================================================= */
+
+$btn-tones: (
+    'primary': 'primary',
+    'secondary': 'secondary',
+    'gray': 'gray',
+    'danger': 'danger',
+    'warning': 'warning',
+    'success': 'success',
+    'info': 'info',
+);
+
+$btn-sizes: (
+    xl: (
+        min-width: 88px,
+        height: 56px,
+        padding: 16px,
+        gap: 6px,
+        font: btn1,
+        weight: sb,
+    ),
+    lg: (
+        min-width: 80px,
+        height: 48px,
+        padding: 16px,
+        gap: 6px,
+        font: btn2,
+        weight: sb,
+    ),
+    md: (
+        min-width: 80px,
+        height: 44px,
+        padding: 16px,
+        gap: 4px,
+        font: btn2,
+        weight: sb,
+    ),
+    sm: (
+        min-width: 68px,
+        height: 36px,
+        padding: 12px,
+        gap: 4px,
+        font: btn3,
+        weight: rg,
+    ),
+    xs: (
+        min-width: 58px,
+        height: 24px,
+        padding: 8px,
+        gap: 4px,
+        font: btn4,
+        weight: rg,
+    ),
+);
+
+$btn-text-sizes: (
+    lg: (
+        font: btn2,
+        weight: rg,
+    ),
+    md: (
+        font: btn3,
+        weight: rg,
+    ),
+    sm: (
+        font: btn4,
+        weight: rg,
+    ),
+);
+
+$icon-button-tones: $btn-tones;
+
+/* =========================================================
+   Variant
+========================================================= */
+
+@mixin btn-variant($variant, $color) {
+    @if $variant ==fill {
+        --btn-bg: var(--bg-button-#{$color});
+        --btn-fg: var(--color-button);
+        --btn-bd: transparent;
+
+        --btn-bg-hover: var(--bg-button-#{$color}-hover);
+        --btn-bg-active: var(--bg-button-#{$color}-active);
+    } @else if $variant ==outline {
+        --btn-bg: var(--bg-button);
+        --btn-fg: var(--color-button-#{$color});
+        --btn-bd: var(--border-button-#{$color});
+
+        --btn-bg-hover: var(--bg-button-gray-0-alpha-60);
+        --btn-bg-active: var(--bg-button-gray-0-alpha-80);
+        --btn-fg-hover: var(--color-button-#{$color}-hover);
+        --btn-fg-active: var(--color-button-#{$color}-active);
+
+        --btn-bd-hover: var(--border-button-#{$color}-hover);
+        --btn-bd-active: var(--border-button-#{$color}-active);
+    } @else if $variant ==soft {
+        --btn-bg: var(--bg-icon-button-#{$color}-soft);
+        --btn-fg: var(--color-button-#{$color});
+        --btn-bd: transparent;
+
+        --btn-bg-hover: var(--bg-icon-button-#{$color}-soft-hover);
+        --btn-bg-active: var(--bg-icon-button-#{$color}-soft-active);
+        --btn-fg-hover: var(--color-button-#{$color}-hover);
+        --btn-fg-active: var(--color-button-#{$color}-active);
+    } @else if $variant ==text {
+        --btn-bg: transparent;
+        --btn-fg: var(--color-button-#{$color});
+        --btn-bd: transparent;
+
+        --btn-fg-hover: var(--color-button-#{$color}-hover);
+        --btn-fg-active: var(--color-button-#{$color}-active);
+    } @else if $variant ==underline {
+        --btn-bg: transparent;
+        --btn-fg: var(--color-button-#{$color});
+        --btn-bd: transparent;
+
+        --btn-fg-hover: var(--color-button-#{$color}-hover);
+        --btn-fg-active: var(--color-button-#{$color}-active);
+
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    --btn-focus: var(--outline-button-#{$color});
+}
+
+/* =========================================================
+   Button
+========================================================= */
+
+.app-button {
+    @include font(btn2, rg);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    border: 1px solid transparent;
+
+    background: transparent;
+    color: var(--color-button-gray-900);
+
+    cursor: pointer;
+    user-select: none;
+
+    text-decoration: none;
+    white-space: nowrap;
+
+    appearance: none;
+
+    transition:
+        background-color 0.15s,
+        border-color 0.15s,
+        color 0.15s,
+        box-shadow 0.15s,
+        opacity 0.15s;
+
+    /* CSS Variables */
+
+    --btn-bg: transparent;
+    --btn-fg: var(--color-button-gray-900);
+    --btn-bd: transparent;
+
+    --btn-bg-hover: transparent;
+    --btn-bg-active: transparent;
+
+    --btn-fg-hover: var(--btn-fg);
+    --btn-fg-active: var(--btn-fg);
+
+    --btn-bd-hover: var(--btn-bd);
+    --btn-bd-active: var(--btn-bd);
+
+    --btn-focus: var(--outline-button);
+
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    border-color: var(--btn-bd);
+
+    &:hover {
+        background: var(--btn-bg-hover);
+        color: var(--btn-fg-hover);
+        border-color: var(--btn-bd-hover);
+    }
+
+    &:active {
+        background: var(--btn-bg-active);
+        color: var(--btn-fg-active);
+        border-color: var(--btn-bd-active);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--btn-focus);
+        outline-offset: 2px;
+    }
+
+    /* ------------------------------------------------
+       Button Size (fill / outline only)
+    ------------------------------------------------ */
+
+    @each $size, $data in $btn-sizes {
+        &.app-button--size-#{$size} {
+            min-width: map.get($data, min-width);
+            height: map.get($data, height);
+
+            padding-inline: map.get($data, padding);
+            gap: map.get($data, gap);
+
+            @include font(map.get($data, font), map.get($data, weight));
+        }
+    }
+
+    /* ------------------------------------------------
+       Shape
+    ------------------------------------------------ */
+
+    &--shape-square {
+        border-radius: 0;
+    }
+
+    &--shape-round {
+        border-radius: 6px;
+    }
+
+    &--shape-pill {
+        border-radius: 999px;
+    }
+
+    /* ------------------------------------------------
+       Variant
+    ------------------------------------------------ */
+
+    &--variant-fill {
+        @include btn-variant(fill, 'primary');
+    }
+
+    &--variant-outline {
+        @include btn-variant(outline, 'primary');
+    }
+
+    &--variant-soft {
+        @include btn-variant(soft, 'primary');
+    }
+
+    &--variant-text {
+        @include btn-variant(text, 'primary');
+    }
+
+    &--variant-underline {
+        @include btn-variant(underline, 'primary');
+    }
+
+    /* ------------------------------------------------
+       Tone
+    ------------------------------------------------ */
+
+    @each $tone, $color in $btn-tones {
+        &--tone-#{$tone} {
+            &.app-button--variant-fill {
+                @include btn-variant(fill, $color);
+            }
+
+            &.app-button--variant-outline {
+                @include btn-variant(outline, $color);
+            }
+
+            &.app-button--variant-soft {
+                @include btn-variant(soft, $color);
+            }
+        }
+    }
+
+    /* ------------------------------------------------
+       States
+    ------------------------------------------------ */
+
+    // active: 선택/완료(Completion) 상태. 눌린 상태와 동일한 색상을 유지합니다.
+    &--active {
+        background: var(--btn-bg-active);
+        color: var(--btn-fg-active);
+        border-color: var(--btn-bd-active);
+    }
+
+    &--disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &--loading {
+        cursor: progress;
+    }
+
+    /* ------------------------------------------------
+       Icon
+    ------------------------------------------------ */
+
+    &__icon {
+        @extend .app-icon;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    &__label {
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+    }
+}
+
+/* =========================================================
+   Unstyled Button
+   <AppButton unstyled> : 버튼 동작(disabled, to, href, click)은 그대로,
+   모양은 사용하는 컴포넌트(탭, 세그먼트, 별점, 카드 등)가 정의합니다.
+========================================================= */
+
+.app-button-unstyled {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-align: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    appearance: none;
+
+    &:disabled,
+    &[aria-disabled='true'] {
+        cursor: not-allowed;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--outline-button);
+        outline-offset: 2px;
+    }
+
+    > .app-button__label {
+        display: contents;
+    }
+}
+
+/* =========================================================
+   Text Button
+========================================================= */
+
+.app-text-button {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-button-gray-700);
+    --btn-bd: transparent;
+    --btn-bg-hover: transparent;
+    --btn-bg-active: transparent;
+    --btn-fg-hover: var(--btn-fg);
+    --btn-fg-active: var(--btn-fg);
+    --btn-focus: var(--outline-button);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: auto;
+    height: auto;
+    padding: 0;
+    border: 1px solid transparent;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    cursor: pointer;
+    user-select: none;
+    appearance: none;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        color 0.15s,
+        opacity 0.15s;
+
+    &:hover {
+        color: var(--btn-fg-hover);
+    }
+
+    &:active {
+        color: var(--btn-fg-active);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--btn-focus);
+        outline-offset: 2px;
+    }
+
+    &--variant-text {
+        @include btn-variant(text, 'gray');
+    }
+
+    &--variant-underline {
+        @include btn-variant(underline, 'gray');
+    }
+
+    @each $tone, $color in $btn-tones {
+        &--tone-#{$tone} {
+            &.app-text-button--variant-text {
+                @include btn-variant(text, $color);
+            }
+
+            &.app-text-button--variant-underline {
+                @include btn-variant(underline, $color);
+            }
+        }
+    }
+
+    @each $size, $data in $btn-text-sizes {
+        &--size-#{$size} {
+            @include font(map.get($data, font), map.get($data, weight));
+        }
+    }
+
+    &--disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &--loading {
+        cursor: progress;
+    }
+
+    &__icon {
+        @extend .app-icon;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    &__label {
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+    }
+}
+
+/* =========================================================
+   Icon Button
+========================================================= */
+
+.app-icon-button {
+    --icon-button-size: 32px;
+    --icon-size: 16px;
+    --icon-button-color: var(--color-button-gray-700);
+    --icon-button-bg: transparent;
+    --icon-button-border: transparent;
+    --icon-button-bg-hover: var(--bg-button-gray-900-alpha-6);
+    --icon-button-bg-active: var(--bg-button-gray-900-alpha-10);
+    --icon-button-focus: var(--outline-button);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: var(--icon-button-size);
+    height: var(--icon-button-size);
+    padding: 0;
+    border: 1px solid var(--icon-button-border);
+    background: var(--icon-button-bg);
+    color: var(--icon-button-color);
+    cursor: pointer;
+    appearance: none;
+    text-decoration: none;
+    transition:
+        background-color 0.15s,
+        border-color 0.15s,
+        color 0.15s,
+        opacity 0.15s;
+
+    .app-icon,
+    svg {
+        display: block;
+        width: var(--icon-size);
+        height: var(--icon-size);
+        font-size: var(--icon-size);
+        color: currentColor;
+    }
+
+    &:hover {
+        background: var(--icon-button-bg-hover);
+    }
+
+    &:active {
+        background: var(--icon-button-bg-active);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--icon-button-focus);
+        outline-offset: 2px;
+    }
+
+    &--shape-square {
+        border-radius: 0;
+    }
+
+    &--shape-round {
+        border-radius: 6px;
+    }
+
+    &--shape-pill {
+        border-radius: 999px;
+    }
+
+    &--disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    @each $tone, $color in $icon-button-tones {
+        &--tone-#{$tone} {
+            --icon-button-color: var(--color-button-#{$color});
+            --icon-button-focus: var(--outline-button-#{$color});
+
+            &.app-icon-button--variant-soft {
+                --icon-button-bg: var(--bg-icon-button-#{$color}-soft);
+                --icon-button-bg-hover: var(--bg-icon-button-#{$color}-soft-hover);
+                --icon-button-bg-active: var(--bg-icon-button-#{$color}-soft-active);
+            }
+
+            &.app-icon-button--variant-outline {
+                --icon-button-border: var(--border-icon-button-#{$color});
+                --icon-button-bg-hover: var(--bg-icon-button-#{$color}-outline-hover);
+                --icon-button-bg-active: var(--bg-icon-button-#{$color}-outline-active);
+            }
+        }
+    }
+}
+
+/* =========================================================
+   Spinner
+========================================================= */
+
+.app-button__spinner,
+.app-text-button__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: btn-spin 0.6s linear infinite;
+}
+
+@keyframes btn-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   Icon spacing
+========================================================= */
+
+// .app-button__icon--left {
+//     margin-right: 4px
+// }
+
+// .app-button__icon--right {
+//     margin-left: 4px
+// }

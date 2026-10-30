@@ -1,0 +1,181 @@
+@use '../../abstract' as *;
+
+.app-textarea {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid var(--border-textarea);
+    border-radius: 10px;
+    background: var(--bg-textarea);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+
+    &:has(.app-textarea__footer) .app-textarea__control {
+        padding-bottom: 34px;
+    }
+
+    &__control {
+        width: 100%;
+        min-width: 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--color-textarea);
+        font-family: $font-family-base;
+
+        box-sizing: border-box;
+
+        &::placeholder {
+            color: var(--color-textarea-gray-400);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+
+        position: absolute;
+        bottom: 10px;
+        left: 14px;
+        right: 14px;
+    }
+
+    &__clear {
+        padding-inline: 0;
+        min-height: auto;
+    }
+
+    &__count {
+        margin-left: auto;
+        color: var(--color-textarea-gray-400);
+        line-height: 1;
+
+        @include font(c2, rg);
+    }
+
+    &.is-focused {
+        border-color: var(--border-textarea-primary-500);
+        box-shadow: 0 0 0 3px var(--shadow-textarea);
+    }
+
+    &.is-error {
+        border-color: var(--border-textarea-status-error);
+
+        &.is-focused {
+            box-shadow: 0 0 0 3px var(--shadow-textarea-status-error-alpha-12);
+        }
+    }
+
+    &.is-warning {
+        border-color: var(--border-textarea-status-warning);
+    }
+
+    &.is-success {
+        border-color: var(--border-textarea-status-success);
+    }
+
+    &.is-disabled {
+        background: var(--bg-textarea-gray-50);
+        border-color: var(--border-textarea);
+        color: var(--color-textarea-gray-400);
+        cursor: not-allowed;
+
+        .app-textarea__control {
+            color: var(--color-textarea-gray-400);
+        }
+    }
+
+    &.is-readonly {
+        background: var(--bg-textarea-gray-50);
+    }
+
+    &--xs {
+        .app-textarea__control {
+            padding: 7px 10px;
+
+            @include font(c2, rg);
+        }
+    }
+
+    &--sm {
+        .app-textarea__control {
+            padding: 9px 12px;
+
+            @include font(b4, rg);
+        }
+    }
+
+    &--md {
+        .app-textarea__control {
+            padding: 11px 14px;
+
+            @include font(b3, rg);
+        }
+    }
+
+    &--lg {
+        .app-textarea__control {
+            padding: 13px 16px;
+
+            @include font(b2, rg);
+        }
+    }
+
+    &--shape-square {
+        border-radius: 0;
+    }
+
+    &--shape-round {
+        border-radius: 6px;
+    }
+
+    &--shape-pill {
+        border-radius: 24px;
+
+        .app-textarea__control {
+            padding-inline: 20px;
+        }
+    }
+
+    &--shape-underline {
+        border-width: 0 0 1px;
+        border-radius: 0;
+
+        .app-textarea__control {
+            padding-inline: 0;
+        }
+    }
+
+    &--resize-none {
+        .app-textarea__control {
+            resize: none;
+        }
+    }
+
+    &--resize-vertical {
+        .app-textarea__control {
+            resize: vertical;
+        }
+    }
+
+    &--resize-horizontal {
+        .app-textarea__control {
+            resize: horizontal;
+        }
+    }
+
+    &--resize-both {
+        .app-textarea__control {
+            resize: both;
+        }
+    }
+}

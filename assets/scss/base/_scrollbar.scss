@@ -1,0 +1,57 @@
+@use '../abstract' as *;
+
+/* =========================================
+   Scrollbar System
+   설명: 공통 스크롤바 스타일
+   - 기본(light background)
+   - dark background (LNB 등)
+========================================= */
+
+/* ----------------------------------------
+   Scrollbar Mixin
+---------------------------------------- */
+
+@mixin scrollbar($thumb, $hover) {
+    scrollbar-width: thin;
+    scrollbar-color: $thumb transparent;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: $thumb;
+
+        border-radius: 999px;
+
+        border: 2px solid transparent;
+
+        background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: $hover;
+    }
+}
+
+/* =========================================
+   Default Scrollbar (Light UI)
+========================================= */
+
+* {
+    @include scrollbar(var(--theme-gray-700-alpha-45), var(--theme-gray-700-alpha-70));
+}
+
+/* =========================================
+   Dark Scrollbar (Sidebar / Dark UI)
+========================================= */
+
+.layout-nav,
+.layout-nav * {
+    @include scrollbar(var(--theme-gray-0-alpha-35), var(--theme-gray-0-alpha-60));
+}

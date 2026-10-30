@@ -1,0 +1,65 @@
+@use './variables' as *;
+@use './tokens' as *;
+@use 'sass:map';
+@use 'sass:list';
+
+// =========================================
+// Framework Typography
+// 토큰 원본: abstract/_tokens.scss ($ds-typography-pc / $ds-typography-mo)
+// CSS 변수: base/_typography-vars.scss (--ds-font-{token}-size / -lh, MO 자동 전환)
+// =========================================
+
+// 기존 코드 호환용 별칭
+$font-weight: $ds-font-weight;
+$letter-spacing: map.get($ds-letter-spacing, 'kr');
+
+// PC 기준 스케일 (SCSS 계산이 필요할 때만 사용)
+$typography-scale: ();
+
+@each $token, $value in $ds-typography-pc {
+    $typography-scale: map.merge(
+        $typography-scale,
+        (
+            $token: (
+                    size: list.nth($value, 1),
+                    lh: list.nth($value, 2),
+                ),
+        )
+    );
+}
+
+@function typography-scale($key) {
+    $value: map.get($typography-scale, $key);
+
+    @if $value == null {
+        @error "Unknown typography token `#{$key}`.";
+    }
+
+    @return $value;
+}
+
+/// 디자인 시스템 폰트 적용
+/// PC / MO 크기는 CSS 변수로 자동 전환됩니다. (767px 이하 MO)
+/// @param $token  d1~d6 / h1~h6 / t1~t5 / b1~b4 / c1~c3 / btn1~btn4
+/// @param $weight-key  lt(300) / rg(400) / sb(600)
+/// @param $lang  kr(-2.5%) / en(0)  또는 직접 letter-spacing 값
+@mixin font($token, $weight-key, $lang: kr) {
+    $weight: map.get($ds-font-weight, $weight-key);
+
+    @if map.get($ds-typography-pc, $token) == null {
+        @error "Unknown typography token `#{$token}`.";
+    }
+
+    @if $weight == null {
+        @error "Unknown font-weight token `#{$weight-key}`.";
+    }
+
+    $ls: $lang;
+
+    @if map.has-key($ds-letter-spacing, $lang) {
+        $ls: map.get($ds-letter-spacing, $lang);
+    }
+
+    font: #{$weight} var(--ds-font-#{$token}-size) / var(--ds-font-#{$token}-lh) #{$ds-font-family};
+    letter-spacing: $ls;
+}

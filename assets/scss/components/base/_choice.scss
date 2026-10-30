@@ -1,0 +1,528 @@
+@use '../../abstract' as *;
+
+/* =========================================
+   Component: AppChoice
+   - checkbox / radio / chip selection
+   - BEM Structure
+   - Dart Sass 3.0 compatible
+========================================= */
+
+.app-choice {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    position: relative;
+    cursor: pointer;
+
+    @include font(b3, rg);
+
+    /* ----------------------------------------
+       Element: Control
+    ---------------------------------------- */
+    &__control {
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+    /* ----------------------------------------
+       Element: Input
+    ---------------------------------------- */
+    &__input {
+        position: absolute;
+        inset: 0;
+        margin: 0;
+        opacity: 0;
+        cursor: inherit;
+    }
+
+    /* ----------------------------------------
+       Element: Visual
+    ---------------------------------------- */
+    &__visual {
+        display: grid;
+        place-items: center;
+        background: var(--bg-checkbox);
+        transition:
+            border-color 0.12s ease,
+            background-color 0.12s ease,
+            box-shadow 0.12s ease,
+            opacity 0.12s ease;
+    }
+
+    /* ----------------------------------------
+       Element: Inner
+    ---------------------------------------- */
+    &__inner {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    &__dot {
+        display: block;
+        border-radius: 999px;
+    }
+
+    /* ----------------------------------------
+       Element: Body
+    ---------------------------------------- */
+    &__body {
+        display: grid;
+        gap: 2px;
+    }
+
+    &__label {
+        color: var(--color-checkbox);
+    }
+
+    &__hint {
+        @include font(c2, rg);
+        color: var(--color-checkbox-gray-600);
+    }
+
+    /* ----------------------------------------
+       Focus
+    ---------------------------------------- */
+    &__input:focus-visible + .app-choice__visual {
+        outline: 2px solid var(--outline-checkbox);
+        outline-offset: 2px;
+    }
+
+    /* ----------------------------------------
+       Size
+    ---------------------------------------- */
+    &--md {
+        .app-choice__visual {
+            width: 22px;
+            height: 22px;
+        }
+
+        .app-choice__label {
+            @include font(b3, rg);
+        }
+
+        &.app-choice--checkbox {
+            .app-choice__inner svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        &.app-choice--radio {
+            .app-choice__dot {
+                width: 8px;
+                height: 8px;
+            }
+        }
+    }
+
+    &--sm {
+        gap: 6px;
+
+        .app-choice__visual {
+            width: 18px;
+            height: 18px;
+        }
+
+        .app-choice__label {
+            @include font(b4, rg);
+        }
+
+        .app-choice__hint {
+            @include font(c3, rg);
+        }
+
+        &.app-choice--checkbox {
+            .app-choice__inner svg {
+                width: 12px;
+                height: 12px;
+            }
+        }
+
+        &.app-choice--radio {
+            .app-choice__dot {
+                width: 6px;
+                height: 6px;
+            }
+        }
+    }
+
+    /* ----------------------------------------
+       Type: Checkbox
+    ---------------------------------------- */
+    &--checkbox {
+        .app-choice__inner {
+            color: var(--color-checkbox-gray-0);
+
+            svg {
+                display: block;
+                width: 100%;
+                height: 100%;
+                color: currentColor;
+            }
+
+            path {
+                fill: currentColor;
+            }
+        }
+    }
+
+    /* ----------------------------------------
+       Type: Radio
+    ---------------------------------------- */
+    &--radio {
+        .app-choice__visual,
+        .app-choice__inner {
+            border-radius: 999px;
+        }
+    }
+
+    &--default {
+        &.app-choice--checkbox {
+            .app-choice__visual {
+                border: 1px solid var(--border-checkbox);
+                border-radius: 0;
+                background: var(--bg-checkbox);
+            }
+
+            .app-choice__input:checked + .app-choice__visual,
+            &.is-indeterminate .app-choice__visual {
+                border-color: var(--border-checkbox-black);
+                background: var(--bg-checkbox-black);
+            }
+        }
+
+        &.app-choice--radio {
+            .app-choice__visual {
+                border: 1px solid var(--border-checkbox);
+                background: var(--bg-checkbox);
+            }
+
+            .app-choice__input:checked + .app-choice__visual {
+                border-color: var(--border-checkbox-black);
+                background: var(--bg-checkbox);
+
+                .app-choice__dot {
+                    background: var(--bg-checkbox-black);
+                }
+            }
+        }
+    }
+
+    &--round {
+        &.app-choice--checkbox {
+            .app-choice__visual {
+                border: 1px solid var(--border-checkbox-gray-200);
+                border-radius: 999px;
+                background: var(--bg-checkbox);
+            }
+
+            .app-choice__input:checked + .app-choice__visual,
+            &.is-indeterminate .app-choice__visual {
+                border-color: var(--border-checkbox-black);
+                background: var(--bg-checkbox-black);
+                box-shadow: 0 0 0 1px var(--shadow-checkbox);
+            }
+        }
+
+        &.app-choice--radio {
+            .app-choice__visual {
+                border: 1px solid var(--border-checkbox-gray-200);
+                background: var(--bg-checkbox);
+            }
+
+            .app-choice__input:checked + .app-choice__visual {
+                border-color: var(--border-checkbox-black);
+                background: var(--bg-checkbox-black);
+                box-shadow: 0 0 0 1px var(--shadow-checkbox);
+
+                .app-choice__dot {
+                    background: var(--bg-checkbox);
+                }
+            }
+        }
+    }
+
+    /* ----------------------------------------
+       Disabled
+    ---------------------------------------- */
+    &__input:disabled + .app-choice__visual {
+        border-color: var(--border-checkbox-disabled);
+        background: var(--bg-checkbox-regular);
+
+        .app-choice__inner {
+            svg path {
+                fill: var(--fill-checkbox);
+            }
+        }
+
+        .app-choice__dot {
+            background: var(--bg-checkbox-05-gray-disabled);
+        }
+    }
+
+    &.is-disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    /* ----------------------------------------
+       State
+    ---------------------------------------- */
+    &.is-error {
+        .app-choice__visual {
+            border-color: var(--border-checkbox-status-error);
+        }
+
+        .app-choice__hint {
+            color: var(--color-checkbox-status-error);
+        }
+    }
+
+    &.is-warning {
+        .app-choice__visual {
+            border-color: var(--border-checkbox-status-warning);
+        }
+
+        .app-choice__hint {
+            color: var(--color-checkbox-status-warning);
+        }
+    }
+
+    &.is-success {
+        .app-choice__visual {
+            border-color: var(--border-checkbox-status-success);
+        }
+
+        .app-choice__hint {
+            color: var(--color-checkbox-status-success);
+        }
+    }
+
+    /* ----------------------------------------
+       Chip Variants
+       - keep input alive
+       - hide default visual only
+    ---------------------------------------- */
+    &--chip,
+    &--chip-outline,
+    &--fill,
+    &--ghost,
+    &--toggle {
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        background-color: transparent;
+
+        @include font(b4, rg);
+
+        .app-choice__control {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .app-choice__input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        .app-choice__visual {
+            display: none;
+        }
+
+        .app-choice__body {
+            gap: 0;
+        }
+
+        .app-choice__hint {
+            display: none;
+        }
+    }
+
+    &--chip {
+        background-color: var(--bg-checkbox-gray-50);
+        border-color: var(--border-checkbox-gray-200);
+
+        &.is-checked {
+            background-color: var(--bg-checkbox-primary);
+            border-color: var(--border-checkbox-primary);
+
+            .app-choice__label {
+                color: var(--color-checkbox-gray-0);
+            }
+        }
+    }
+
+    &--chip-outline {
+        background-color: var(--bg-checkbox-gray-0);
+        border-color: var(--border-checkbox-gray-300);
+
+        &.is-checked {
+            border-color: var(--border-checkbox-primary);
+            background-color: var(--bg-checkbox-primary-50);
+
+            .app-choice__label {
+                color: var(--color-checkbox-primary-700);
+            }
+        }
+    }
+
+    &--fill {
+        padding-inline: 10px;
+        border-radius: 8px;
+        background-color: var(--bg-checkbox-gray-50);
+        border-color: var(--border-checkbox-gray-50);
+
+        &.is-checked {
+            background-color: var(--bg-checkbox-primary);
+            border-color: var(--border-checkbox-primary);
+
+            .app-choice__label {
+                color: var(--color-checkbox-gray-0);
+            }
+        }
+    }
+
+    &--ghost {
+        border-color: transparent;
+        background-color: transparent;
+
+        .app-choice__label {
+            color: var(--color-checkbox-gray-600);
+        }
+
+        &.is-checked {
+            background-color: var(--bg-checkbox-primary-100);
+            border-color: var(--border-checkbox-primary-100);
+
+            .app-choice__label {
+                color: var(--color-checkbox-primary-700);
+            }
+        }
+    }
+
+    &--toggle {
+        position: relative;
+        min-width: 72px;
+        height: 34px;
+        padding: 0 11px;
+        justify-content: flex-start;
+        border-radius: 999px;
+        border-color: var(--border-checkbox-gray-200);
+        background-color: var(--bg-checkbox-gray-200);
+        box-shadow: inset 0 0 0 1px var(--shadow-checkbox-gray-800-alpha-4);
+        transition:
+            background-color 0.24s ease,
+            border-color 0.24s ease,
+            box-shadow 0.24s ease;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: var(--bg-checkbox-gray-0);
+            box-shadow:
+                0 2px 6px var(--shadow-checkbox-gray-900-alpha-18),
+                0 0 0 1px var(--shadow-checkbox);
+            transform: translateX(0);
+            transition:
+                transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.24s ease,
+                box-shadow 0.24s ease;
+        }
+
+        .app-choice__body {
+            width: 100%;
+        }
+
+        .app-choice__label {
+            width: 100%;
+            color: var(--color-checkbox-gray-600);
+            font-weight: 700;
+            text-align: right;
+            text-transform: uppercase;
+            transition:
+                color 0.2s ease,
+                opacity 0.2s ease;
+        }
+
+        .app-choice__toggle-text {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            color: var(--color-checkbox-gray-600);
+            font-weight: 700;
+            text-align: right;
+            text-transform: uppercase;
+            pointer-events: none;
+            transition:
+                color 0.2s ease,
+                opacity 0.2s ease;
+        }
+
+        &.is-checked {
+            justify-content: flex-end;
+            border-color: var(--border-checkbox-primary-500);
+            background-color: var(--bg-checkbox-primary-500);
+            box-shadow: inset 0 0 0 1px var(--shadow-checkbox-primary-700-alpha-8);
+
+            &::after {
+                background-color: var(--bg-checkbox-gray-0);
+                transform: translateX(calc(100% + 11px));
+            }
+
+            .app-choice__label {
+                color: var(--color-checkbox-gray-0);
+                text-align: left;
+            }
+
+            .app-choice__toggle-text {
+                color: var(--color-checkbox-gray-0);
+                text-align: left;
+            }
+        }
+
+        &.is-disabled {
+            background-color: var(--bg-checkbox-gray-100);
+            border-color: var(--border-checkbox-gray-200);
+            box-shadow: none;
+
+            &::after {
+                background-color: var(--bg-checkbox-gray-0);
+                box-shadow: 0 1px 3px var(--shadow-checkbox-gray-900-alpha-8);
+            }
+
+            .app-choice__label,
+            .app-choice__toggle-text {
+                color: var(--color-checkbox-gray-400);
+            }
+        }
+    }
+
+    &.is-readonly {
+        .app-choice__visual {
+            background: var(--bg-checkbox-light);
+        }
+
+        .app-choice__label,
+        .app-choice__hint {
+            color: var(--color-checkbox-gray-700);
+        }
+
+        .app-choice__input {
+            cursor: default;
+        }
+    }
+}

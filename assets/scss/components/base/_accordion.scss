@@ -1,0 +1,141 @@
+@use '../../abstract' as *;
+
+/* =========================================
+   Component: AppAccordion
+========================================= */
+
+.app-accordion {
+    display: grid;
+    gap: 10px;
+
+    &__item {
+        border: 1px solid var(--border-accordion);
+        border-radius: 16px;
+        background: var(--bg-accordion);
+        overflow: hidden;
+
+        &.is-disabled {
+            opacity: 0.5;
+        }
+    }
+
+    &__trigger {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        padding: 16px 20px;
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    &__trigger-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    &__text {
+        display: grid;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    &__title {
+        display: block;
+        @include font(b3, sb);
+        color: var(--color-accordion);
+    }
+
+    &__desc {
+        margin: 0;
+        @include font(c2, rg);
+        color: var(--color-accordion-gray-600);
+    }
+
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        transition: transform 0.2s ease;
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        &.is-open {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__panel {
+        border-top: 1px solid var(--border-accordion-gray-100);
+    }
+
+    &__panel-inner {
+        padding: 20px;
+    }
+
+    &__empty {
+        @include font(c2, rg);
+        color: var(--color-accordion-gray-500);
+    }
+}
+
+/* -----------------------------------------
+   Variant: line
+   Figma 13. Table Guide - 드롭 다운 테이블 (FAQ)
+----------------------------------------- */
+
+.app-accordion {
+    &__text {
+        flex: 1 1 auto;
+    }
+
+    &__prefix {
+        flex: 0 0 auto;
+        @include font(b3, sb);
+        color: var(--color-accordion);
+    }
+
+    &__content {
+        margin: 0;
+        white-space: pre-line;
+        @include font(b4, rg);
+        color: var(--color-accordion-gray-600);
+    }
+
+    &--line {
+        gap: 0;
+        border-top: 1px solid var(--border-accordion-line-strong);
+
+        .app-accordion__item {
+            border: 0;
+            border-bottom: 1px solid var(--border-accordion-line);
+            border-radius: 0;
+        }
+
+        .app-accordion__trigger {
+            padding: 20px 4px;
+        }
+
+        .app-accordion__title {
+            @include font(b3, rg);
+        }
+
+        .app-accordion__panel {
+            border-top: 0;
+            background: var(--bg-accordion-line-panel);
+        }
+
+        .app-accordion__panel-inner {
+            padding: 24px 20px;
+        }
+    }
+}

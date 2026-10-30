@@ -1,0 +1,197 @@
+@use '../../abstract' as *;
+
+/* =========================================
+   Component: AppTable
+========================================= */
+
+.app-table {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &__title {
+        @include font(h4, sb);
+        color: var(--color-table);
+    }
+
+    &__description {
+        @include font(b4, rg);
+        color: var(--color-table-gray-600);
+    }
+
+    &__content {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    &__table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        border-top: 1px solid var(--border-table);
+        border-bottom: 1px solid var(--border-table);
+        background: var(--bg-table);
+    }
+
+    &__row {
+        border-bottom: 1px solid var(--border-table-light);
+    }
+
+    &__th,
+    &__td {
+        padding: 12px 16px;
+        border-left: 1px solid var(--border-table-light);
+        vertical-align: middle;
+
+        &:first-child {
+            border-left: 0;
+        }
+    }
+
+    &__th {
+        @include font(b3, sb);
+        color: var(--color-table);
+        background: var(--bg-table-light);
+        text-align: left;
+        word-break: break-word;
+    }
+
+    &__td {
+        @include font(b3, rg);
+        color: var(--color-table-gray-800);
+        background: var(--bg-table);
+    }
+
+    &__required {
+        margin-left: 2px;
+        color: var(--color-table-status-error);
+    }
+
+    &__table--stacked {
+        .app-table__th--stacked {
+            text-align: left;
+        }
+    }
+
+    .is-full {
+        width: 100%;
+    }
+
+    .is-readonly {
+        background: var(--bg-table-light);
+    }
+
+    .is-disabled {
+        background: var(--bg-table-regular);
+    }
+
+    .is-textarea {
+        vertical-align: top;
+    }
+}
+
+/* =========================================
+   Component: AppTableField
+========================================= */
+
+.app-table-field {
+    width: 100%;
+
+    &__text {
+        display: inline-block;
+        width: 100%;
+        word-break: break-word;
+        color: var(--color-table-gray-800);
+    }
+
+    &__textarea {
+        width: 100%;
+        min-height: 96px;
+        padding: 12px 14px;
+        border: 1px solid var(--border-table);
+        border-radius: 6px;
+        resize: vertical;
+        background: var(--bg-table);
+        color: var(--color-table);
+        outline: none;
+        transition: border-color 0.15s ease;
+        box-sizing: border-box;
+
+        &::placeholder {
+            color: var(--color-table-gray-500);
+        }
+
+        &:focus {
+            border-color: var(--border-table-primary);
+        }
+
+        &:read-only {
+            background: var(--bg-table-light);
+            color: var(--color-table-gray-700);
+            cursor: default;
+        }
+
+        &:disabled {
+            background: var(--bg-table-regular);
+            color: var(--color-table-05-gray-disabled);
+            cursor: not-allowed;
+        }
+    }
+
+    &__inline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    &__inline-input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__inline-button {
+        flex: none;
+    }
+
+    &__suffix-text,
+    &__range-separator,
+    &__email-at {
+        flex: none;
+        color: var(--color-table-gray-700);
+        @include font(b4, rg);
+        white-space: nowrap;
+    }
+
+    &__choice-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    &__inline--phone,
+    &__inline--email {
+        .app-table-field__phone-input,
+        .app-table-field__email-input {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    &__inline--date-range {
+        .app-table-field__inline-input {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    &.is-readonly {
+        .app-table-field__text {
+            color: var(--color-table-gray-700);
+        }
+    }
+
+    &.is-disabled {
+        opacity: 0.72;
+    }
+}

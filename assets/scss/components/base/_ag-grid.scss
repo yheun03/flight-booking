@@ -1,0 +1,319 @@
+@use '../../abstract' as *;
+
+/* =========================================
+   Component: AG Grid Theme (Quartz 기반 커스텀)
+   설명: 우리 디자인 시스템(폰트/컬러/여백)에 맞춘 래핑 스타일
+   적용 대상: .ag-theme-quartz, .ag-theme-quartz-dark (향후)
+========================================= */
+.ag-overlay-no-rows {
+    padding: 24px;
+    font-size: 14px;
+    color: var(--color-ag-grid);
+    text-align: center;
+}
+
+.ag-theme-quartz {
+    /* ----------------------------------------
+     Base
+  ---------------------------------------- */
+
+    font-family: $font-family-base;
+    font-size: 13px;
+    color: var(--color-ag-grid-gray-800);
+    width: 100%;
+
+    --ag-font-family: #{$font-family-base};
+    --ag-font-size: 13px;
+
+    --ag-background-color: var(--bg-ag-grid);
+    --ag-foreground-color: var(--color-ag-grid-gray-800);
+
+    --ag-header-background-color: var(--bg-ag-grid-gray-50);
+    --ag-header-foreground-color: var(--color-ag-grid-gray-700);
+    --ag-header-column-separator-color: var(--color-ag-grid-gray-200);
+
+    --ag-row-border-color: var(--border-ag-grid);
+    --ag-borders: solid 1px var(--border-ag-grid-gray-900-alpha-6);
+
+    --ag-data-color: var(--color-ag-grid-gray-800);
+    --ag-secondary-foreground-color: var(--color-ag-grid-gray-600);
+
+    --ag-input-border-color: var(--border-ag-grid-gray-200);
+    --ag-input-focus-border-color: var(--border-ag-grid-primary);
+
+    --ag-selected-row-background-color: var(--bg-ag-grid-primary-50-alpha-90);
+    --ag-row-hover-color: var(--color-ag-grid-gray-50);
+    --ag-row-selected-color: var(--color-ag-grid-gray-900);
+
+    --ag-checkbox-background-color: var(--bg-ag-grid-gray-0);
+    --ag-checkbox-border-color: var(--border-ag-grid-gray-300);
+    --ag-checkbox-checked-color: var(--color-ag-grid-primary);
+
+    --ag-range-selection-border-color: var(--border-ag-grid-primary);
+    --ag-range-selection-background-color: var(--bg-ag-grid-primary-100-alpha-60);
+
+    --ag-column-hover-color: var(--color-ag-grid-primary-50-alpha-80);
+
+    /* ----------------------------------------
+     Header
+  ---------------------------------------- */
+
+    .ag-header {
+        border-bottom: 1px solid var(--border-ag-grid);
+    }
+
+    .ag-header-cell {
+        // c1 + 세미볼드 느낌의 헤더
+        @include font(c1, sb);
+        color: var(--color-ag-grid-gray-700);
+        padding-block: 0;
+        align-items: center;
+    }
+
+    .ag-header-cell-label {
+        gap: 4px;
+        align-items: center;
+    }
+
+    .ag-header-cell-text {
+        letter-spacing: -0.01em;
+    }
+
+    /* ----------------------------------------
+     Body / Row
+  ---------------------------------------- */
+
+    .ag-root-wrapper {
+        border-radius: 16px;
+        border: 1px solid var(--border-ag-grid-gray-900-alpha-6);
+        box-shadow:
+            0 18px 40px var(--shadow-ag-grid),
+            0 0 0 1px var(--shadow-ag-grid-gray-900-alpha-2);
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--bg-ag-grid-gray-0-alpha-90), var(--bg-ag-grid-gray-200-alpha-100));
+    }
+
+    &.app-grid--auto-height {
+        .ag-root-wrapper {
+            min-height: auto;
+        }
+
+        .ag-center-cols-viewport {
+            min-height: 0 !important;
+        }
+    }
+
+    .ag-center-cols-viewport {
+        /* 스크롤 컨테이너: 기본 배경 */
+        background: var(--bg-ag-grid-gray-0);
+    }
+
+    .ag-row {
+        @include font(c1, rg);
+
+        &:nth-child(even) {
+            background-color: var(--bg-ag-grid-gray-0);
+        }
+    }
+
+    .ag-row.ag-row-hover {
+        background-color: var(--bg-ag-grid-gray-50);
+    }
+
+    .ag-row.ag-row-selected {
+        background-color: var(--bg-ag-grid-primary-50-alpha-90);
+    }
+
+    /* ----------------------------------------
+     Cell
+  ---------------------------------------- */
+
+    .ag-cell {
+        display: flex;
+        align-items: center;
+        padding-block: 6px;
+        @include font(c1, rg);
+        color: var(--color-ag-grid-gray-800);
+    }
+
+    .ag-cell-wrapper,
+    .ag-cell-value {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .app-grid-cell--align-left {
+        text-align: left;
+    }
+
+    .app-grid-cell--align-center {
+        text-align: center;
+
+        .ag-cell-wrapper,
+        .ag-cell-value,
+        .app-grid-cell-control {
+            justify-content: center;
+        }
+    }
+
+    .app-grid-cell--align-right {
+        text-align: right;
+
+        .ag-cell-wrapper,
+        .ag-cell-value,
+        .app-grid-cell-control {
+            justify-content: flex-end;
+        }
+    }
+
+    .app-grid-cell--valign-top {
+        align-items: flex-start;
+
+        .ag-cell-wrapper,
+        .ag-cell-value,
+        .app-grid-cell-control {
+            align-items: flex-start;
+        }
+    }
+
+    .app-grid-cell--valign-middle {
+        align-items: center;
+
+        .ag-cell-wrapper,
+        .ag-cell-value,
+        .app-grid-cell-control {
+            align-items: center;
+        }
+    }
+
+    .app-grid-cell--valign-bottom {
+        align-items: flex-end;
+
+        .ag-cell-wrapper,
+        .ag-cell-value,
+        .app-grid-cell-control {
+            align-items: flex-end;
+        }
+    }
+
+    .app-grid-cell-control {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+        min-height: 34px;
+
+        > .form-field,
+        > .app-textarea {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .app-choice {
+            flex-shrink: 0;
+        }
+
+        .app-input__field,
+        .app-select__trigger,
+        .app-date-picker__field,
+        .app-textarea__control {
+            width: 100%;
+            min-width: 0;
+        }
+    }
+
+    .app-grid-choice {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 12px;
+        min-width: 0;
+
+        .app-choice {
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+    }
+
+    .app-grid-cell-control--textarea {
+        padding-block: 4px;
+        align-items: stretch;
+    }
+
+    .ag-cell-focus,
+    .ag-cell-range-selected {
+        box-shadow: inset 0 0 0 1px var(--shadow-ag-grid-primary-alpha-65);
+    }
+
+    .ag-cell-inline-editing {
+        .ag-cell-edit-input {
+            @include font(c1, rg);
+            padding: 4px 6px;
+            border-radius: 8px;
+            border: 1px solid var(--border-ag-grid-primary);
+            box-shadow: 0 0 0 1px var(--shadow-ag-grid-primary-alpha-10);
+        }
+    }
+
+    /* ----------------------------------------
+     Checkbox / Selection
+  ---------------------------------------- */
+
+    .ag-checkbox-input-wrapper {
+        border-radius: 6px;
+        border-color: var(--border-ag-grid-gray-300);
+    }
+
+    .ag-checkbox-input-wrapper.ag-checked {
+        background-color: var(--bg-ag-grid-primary);
+        border-color: var(--border-ag-grid-primary);
+        color: var(--color-ag-grid-gray-0);
+
+        &::after {
+            color: var(--color-ag-grid-gray-0);
+        }
+    }
+
+    /* ----------------------------------------
+     Filter / Floating UI
+  ---------------------------------------- */
+
+    .ag-filter-wrapper {
+        .ag-input-field-input {
+            @include font(c2, rg);
+            border-radius: 8px;
+            border: 1px solid var(--border-ag-grid-gray-200);
+            padding: 4px 8px;
+
+            &:focus-visible {
+                border-color: var(--border-ag-grid-primary);
+                outline: none;
+                box-shadow: 0 0 0 1px var(--shadow-ag-grid-primary-alpha-12);
+            }
+        }
+    }
+
+    .ag-popup {
+        border-radius: 10px;
+        border: 1px solid var(--border-ag-grid-gray-900-alpha-6);
+        box-shadow:
+            0 18px 45px var(--shadow-ag-grid-gray-900-alpha-12),
+            0 0 0 1px var(--shadow-ag-grid-gray-900-alpha-2);
+        overflow: hidden;
+    }
+
+    /* ----------------------------------------
+     Status Bar / Pagination (사용 시)
+  ---------------------------------------- */
+
+    .ag-status-bar,
+    .ag-paging-panel {
+        @include font(c2, rg);
+        color: var(--color-ag-grid-gray-600);
+        background: var(--bg-ag-grid-gray-0);
+        border-top: 1px solid var(--border-ag-grid);
+    }
+}
