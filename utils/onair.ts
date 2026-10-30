@@ -3,6 +3,8 @@ import type { AirportCode, FareId, Flight, Search, SegmentId, Passenger } from '
 // 모든 운항 정보와 서비스 조건은 포트폴리오 전용 가상 규칙입니다.
 export const airports = [
     { value: 'ICN', label: '인천 · ICN', city: '서울', name: '인천국제공항', offset: 9, zone: 'KST' },
+    { value: 'GMP', label: '서울/김포 · GMP', city: '서울/김포', name: '김포국제공항', offset: 9, zone: 'KST' },
+    { value: 'CJU', label: '제주 · CJU', city: '제주', name: '제주국제공항', offset: 9, zone: 'KST' },
     { value: 'NRT', label: '도쿄 · NRT', city: '도쿄', name: '나리타국제공항', offset: 9, zone: 'JST' },
     { value: 'BKK', label: '방콕 · BKK', city: '방콕', name: '수완나품공항', offset: 7, zone: 'ICT' },
     { value: 'CDG', label: '파리 · CDG', city: '파리', name: '샤를드골공항', offset: 1, zone: 'DEMO UTC+1' },
@@ -23,7 +25,7 @@ export function searchError(search: Search) {
         !airports.some((item) => item.value === search.from) ||
         !airports.some((item) => item.value === search.to) ||
         search.from === search.to ||
-        (search.from !== 'ICN' && search.to !== 'ICN')
+        (!['ICN', 'GMP'].includes(search.from) && !['ICN', 'GMP'].includes(search.to))
     )
         return 'routeError';
     if (![1, 2].includes(search.adults)) return 'adultError';
@@ -48,20 +50,22 @@ export function flightsFor(search: Search, segment: SegmentId, fare: FareId = 'l
     const from = segment === 'outbound' ? search.from : search.to;
     const to = segment === 'outbound' ? search.to : search.from;
     const date = segment === 'outbound' ? search.departure : search.returning;
-    const route = from === 'ICN' ? to : from;
+    const route = ['ICN', 'GMP'].includes(from) ? to : from;
     const data = {
+        CJU: { price: 66900, tax: 40000, miles: 8000, duration: 75, earned: 276, no: 1011 },
         NRT: { price: 148000, tax: 42000, miles: 15000, duration: from === 'ICN' ? 150 : 160, earned: 750, no: 101 },
         BKK: { price: 268000, tax: 62000, miles: 25000, duration: from === 'ICN' ? 380 : 340, earned: 1800, no: 201 },
         CDG: { price: 628000, tax: 112000, miles: 40000, duration: from === 'ICN' ? 870 : 765, earned: 5500, no: 301 },
-    }[route as 'NRT' | 'BKK' | 'CDG'];
+    }[route as 'CJU' | 'NRT' | 'BKK' | 'CDG'];
     if (!data || !validDate(date)) return [];
-    return ['09:10', '14:30', '21:45'].map((departure, index) => {
+    const departures = route === 'CJU' ? ['06:35', '07:05', '07:10', '07:20', '08:20', '08:55', '09:25'] : ['09:10', '14:30', '21:45'];
+    return departures.map((departure, index) => {
         const departureUtc = Date.parse(`${date}T${departure}:00Z`) - airport(from).offset * 3600000;
         const arrival = new Date(departureUtc + (data.duration + airport(to).offset * 60) * 60000).toISOString();
         return {
             id: `${segment}-${date}-${index}`,
             segment,
-            number: `OA${data.no + index * 2 + (from === 'ICN' ? 0 : 1)}`,
+            number: `KE${data.no + index * 2 + (['ICN', 'GMP'].includes(from) ? 0 : 1)}`,
             from,
             to,
             date,
@@ -69,9 +73,12 @@ export function flightsFor(search: Search, segment: SegmentId, fare: FareId = 'l
             arrival: arrival.slice(11, 16),
             arrivalDate: arrival.slice(0, 10),
             duration: data.duration,
-            aircraft: route === 'CDG' ? 'B787-9' : 'A321',
+            aircraft: route === 'CDG' ? 'B787-9' : route === 'CJU' ? 'A220-300' : 'A321',
             fare,
-            price: data.price + index * 17000 + { light: 0, standard: 35000, flex: 85000 }[fare],
+            price:
+                data.price +
+                (route === 'CJU' ? ([4000, 4000, 4000, 0, 0, 64000, 64000][index] ?? 0) : index * 17000) +
+                { light: 0, standard: 35000, flex: 85000 }[fare],
             tax: data.tax,
             miles: data.miles + { light: 0, standard: 3000, flex: 6000 }[fare],
             earnedMiles: data.earned,
@@ -80,12 +87,15 @@ export function flightsFor(search: Search, segment: SegmentId, fare: FareId = 'l
     });
 }
 export function seatLetters(flight: Flight) {
+    if (flight.aircraft === 'A220-300') return ['A', 'B', 'D', 'E', 'F'];
     return flight.aircraft === 'A321' ? ['A', 'B', 'C', 'D', 'E', 'F'] : ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J'];
 }
 export function seatBlocked(flight: Flight, seat: string) {
     const row = Number(seat.slice(0, -1));
-    if (!seatLetters(flight).includes(seat.slice(-1)) || row < 1 || row > (flight.aircraft === 'A321' ? 20 : 24)) return 'unavailable';
-    if (row === 10 || row === 11) return 'exit';
+    const minRow = flight.aircraft === 'A220-300' ? 28 : 1;
+    const maxRow = flight.aircraft === 'A220-300' ? 55 : flight.aircraft === 'B787-9' ? 24 : 20;
+    if (!seatLetters(flight).includes(seat.slice(-1)) || row < minRow || row > maxRow) return 'unavailable';
+    if (flight.aircraft === 'A220-300' ? [28, 38, 39, 55].includes(row) : row === 10 || row === 11) return 'exit';
     return (row * 7 + seat.charCodeAt(seat.length - 1)) % 9 === 0 ? 'occupied' : '';
 }
 export const mealOffered = (flight: Flight) => flight.from !== 'NRT' && flight.to !== 'NRT';

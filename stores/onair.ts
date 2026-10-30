@@ -4,7 +4,7 @@ import type { Booking, FareId, Flight, MealId, Passenger, Search, SegmentId } fr
 import { dateAfter, flightsFor, passengerError, searchError, seatBlocked, mealOffered, checkinWindow } from '~/utils/onair';
 
 const STORAGE_KEY = 'onair:booking:v1';
-const newSearch = (): Search => ({ trip: 'oneway', from: 'ICN', to: 'NRT', departure: dateAfter(7), returning: dateAfter(10), adults: 1 });
+const newSearch = (): Search => ({ trip: 'roundtrip', from: 'GMP', to: 'CJU', departure: dateAfter(7), returning: dateAfter(8), adults: 1 });
 const newPassenger = (index: number): Passenger => ({ id: `p${index + 1}`, firstName: '', lastName: '', birth: '' });
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 

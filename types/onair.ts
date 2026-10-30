@@ -1,4 +1,4 @@
-export type AirportCode = 'ICN' | 'NRT' | 'BKK' | 'CDG';
+export type AirportCode = 'ICN' | 'GMP' | 'CJU' | 'NRT' | 'BKK' | 'CDG';
 export type SegmentId = 'outbound' | 'inbound';
 export type FareId = 'light' | 'standard' | 'flex';
 export type MealId = 'regular' | 'vegetarian' | 'fruit';
@@ -15,7 +15,7 @@ export type Flight = {
     arrival: string;
     arrivalDate: string;
     duration: number;
-    aircraft: 'A321' | 'B787-9';
+    aircraft: 'A220-300' | 'A321' | 'B787-9';
     fare: FareId;
     price: number;
     tax: number;

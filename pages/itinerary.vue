@@ -1,7 +1,7 @@
 <template>
     <div class="airline-page airline-print airline-print--confirmation">
         <header class="airline-page__heading">
-            <p class="airline__eyebrow">ON AIR / BOOKING CONFIRMATION</p>
+            <p class="airline__eyebrow">KOREAN AIR / BOOKING CONFIRMATION</p>
             <h1>{{ t('onair.itinerary') }}</h1>
             <p>{{ t('onair.confirmationDemo') }}</p>
         </header>

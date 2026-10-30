@@ -10,20 +10,20 @@ import type { ProjectConfig } from './types/project';
  */
 export const projectConfig = {
     key: 'onair',
-    companyName: '온에어 ON AIR',
-    serviceName: 'ON AIR',
+    companyName: '대한항공 예매 연습',
+    serviceName: 'KOREAN AIR PRACTICE',
     locale: 'ko',
     baseURL: '/flight-booking/',
     siteUrl: 'https://yheun03.github.io/flight-booking/',
     favicon: 'images/projects/onair/favicon.svg',
-    themeColor: '#2458dc',
+    themeColor: '#071d75',
     seo: {
-        title: '온에어 ON AIR',
-        titleTemplate: '%s | ON AIR',
-        description: '새로운 장면으로, 온에어. 가상 항공 예약부터 온라인 체크인까지 체험하는 포트폴리오.',
-        keywords: ['ON AIR', '온에어', '항공 예약', '포트폴리오'],
+        title: '대한항공 예매 연습',
+        titleTemplate: '%s | KOREAN AIR PRACTICE',
+        description: '대한항공 스타일의 가상 항공 예약부터 온라인 체크인까지 체험하는 포트폴리오.',
+        keywords: ['대한항공', '항공 예약', '예매 연습', '포트폴리오'],
         ogImage: 'images/projects/onair/og-image.svg',
-        ogImageAlt: 'ON AIR — A new scene awaits',
+        ogImageAlt: 'Korean Air booking practice',
         twitterCard: 'summary_large_image',
     },
 } satisfies ProjectConfig;

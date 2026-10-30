@@ -11,7 +11,7 @@
         </div>
         <article v-for="pass in passes" :key="`${pass.flight.id}-${pass.passenger.id}`" class="airline-boarding-pass">
             <header class="airline-boarding-pass__header">
-                <strong>↗ ON AIR.</strong>
+                <strong>◉ KOREAN AIR</strong>
                 <span>
                     BOARDING PASS
                     <b>DEMO</b>

@@ -12,7 +12,7 @@
                     <em>{{ t('onair.heroTitle2') }}</em>
                 </h1>
                 <p class="airline-hero__description">{{ t('onair.heroDesc') }}</p>
-                <span class="airline-hero__edition">YOUR JOURNEY, ON AIR. &nbsp; / &nbsp; 001</span>
+                <span class="airline-hero__edition">YOUR JOURNEY, KOREAN AIR. &nbsp; / &nbsp; 001</span>
             </div>
             <div class="airline-hero__visual" aria-hidden="true">
                 <div class="airline-hero__sun" />
@@ -27,7 +27,7 @@
                         </linearGradient>
                     </defs>
                     <path d="m-35 330 545-257-55 107-347 200Z" fill="url(#wing)" />
-                    <path d="m445 104 65-31-14-64-15 5Z" fill="#2458dc" />
+                    <path d="m445 104 65-31-14-64-15 5Z" fill="#071d75" />
                     <path d="m55 337 390-188-15 31L95 363Z" fill="#c1cfdf" />
                     <path d="m90 340 330-163" stroke="#a6b8cd" stroke-width="1" />
                     <path d="m162 286 34 20m78-71 31 17" stroke="#c0cede" stroke-width="2" />
@@ -41,41 +41,139 @@
             </div>
         </section>
         <section class="airline-search" :aria-label="t('onair.search')">
-            <form @submit.prevent="submit">
+            <form @submit.prevent="submit" @keydown.esc.prevent="closePanel()">
                 <div class="airline-search__top">
                     <div class="airline__inline">
-                        <AppChoice v-model="form.trip" type="radio" name="trip" value="oneway" :label="t('onair.oneway')" />
-                        <AppChoice v-model="form.trip" type="radio" name="trip" value="roundtrip" :label="t('onair.roundtrip')" />
+                        <AppChoice v-model="form.trip" type="radio" variant="chip" name="trip" value="oneway"
+                            :label="t('onair.oneway')" />
+                        <AppChoice v-model="form.trip" type="radio" variant="chip" name="trip" value="roundtrip"
+                            :label="t('onair.roundtrip')" />
                     </div>
                     <span>{{ t('onair.searchHint') }}</span>
                 </div>
                 <div class="airline-search__fields">
-                    <AppSelect v-model="form.from" id="departure-airport" :label="t('onair.from')" :items="airports" required />
-                    <AppButton class="airline-search__swap" unstyled :aria-label="t('onair.swap')" @click="swap">⇄</AppButton>
-                    <AppSelect v-model="form.to" id="arrival-airport" :label="t('onair.to')" :items="airports" required />
-                    <AppDatePicker
-                        :model-value="form.departure"
-                        id="departure-date"
-                        :label="t('onair.departureDate')"
-                        :min="dateAfter(0)"
-                        @update:model-value="form.departure = String($event || '')"
-                    />
-                    <AppDatePicker
-                        v-if="form.trip === 'roundtrip'"
-                        :model-value="form.returning"
-                        id="return-date"
-                        :label="t('onair.returnDate')"
-                        :min="form.departure"
-                        @update:model-value="form.returning = String($event || '')"
-                    />
-                    <AppSelect v-model="form.adults" id="travelers" :label="t('onair.travelers')" :items="travelerOptions" required />
-                    <AppButton class="airline-search__submit" type="submit" variant="fill" tone="primary" size="lg">
+                    <button id="departure-airport" class="korean-search-field korean-search-field--airport"
+                        type="button" aria-haspopup="dialog" aria-controls="airport-search-panel"
+                        :aria-expanded="activePanel === 'from'" @click="togglePanel('from')">
+                        <span>{{ t('onair.from') }}</span>
+                        <strong>{{ form.from }}</strong>
+                        <small>{{ airport(form.from).city }} / {{ airport(form.from).name }}</small>
+                    </button>
+                    <AppButton class="airline-search__swap" unstyled :aria-label="t('onair.swap')" @click="swap">⇄
+                    </AppButton>
+                    <button id="arrival-airport" class="korean-search-field korean-search-field--airport" type="button"
+                        aria-haspopup="dialog" aria-controls="airport-search-panel"
+                        :aria-expanded="activePanel === 'to'" @click="togglePanel('to')">
+                        <span>{{ t('onair.to') }}</span>
+                        <strong>{{ form.to }}</strong>
+                        <small>{{ airport(form.to).city }} / {{ airport(form.to).name }}</small>
+                    </button>
+                    <button id="departure-date" class="korean-search-field korean-search-field--date" type="button"
+                        aria-haspopup="dialog" aria-controls="date-search-panel"
+                        :aria-expanded="activePanel === 'dates'" @click="togglePanel('dates')">
+                        <span>{{ form.trip === 'roundtrip' ? '출발일 · 귀국일' : t('onair.departureDate') }}</span>
+                        <strong>{{ shortDate(form.departure) }}</strong>
+                        <small v-if="form.trip === 'roundtrip'">→ {{ shortDate(form.returning) }}</small>
+                    </button>
+                    <button id="travelers" class="korean-search-field korean-search-field--passengers" type="button"
+                        aria-haspopup="dialog" aria-controls="passenger-search-panel"
+                        :aria-expanded="activePanel === 'travelers'" @click="togglePanel('travelers')">
+                        <span>{{ t('onair.travelers') }}</span>
+                        <strong>성인 {{ form.adults }}</strong>
+                        <small>일반석</small>
+                    </button>
+                    <AppButton id="search-submit" class="airline-search__submit" type="submit" variant="fill"
+                        tone="primary" size="lg">
                         {{ t('onair.searchFlights') }}
                         <span aria-hidden="true">↗</span>
                     </AppButton>
                 </div>
-                <p v-if="error" id="search-error" class="airline__error" role="alert" tabindex="-1">{{ t(`onair.${error}`) }}</p>
+                <div v-if="activePanel === 'from' || activePanel === 'to'" id="airport-search-panel"
+                    class="korean-search-panel korean-airport-panel" role="dialog" aria-modal="false"
+                    aria-labelledby="airport-search-title">
+                    <header>
+                        <h2 id="airport-search-title">지역과 도시 선택</h2>
+                        <button type="button" data-panel-close aria-label="공항 선택 닫기" @click="closePanel()">×</button>
+                    </header>
+                    <div class="korean-airport-panel__body">
+                        <nav aria-label="지역">
+                            <button v-for="(region, index) in regions" :key="region" type="button"
+                                :class="{ 'is-active': index === selectedRegion }"
+                                :aria-pressed="index === selectedRegion" @click="selectedRegion = index">{{
+                                    region }}</button>
+                        </nav>
+                        <div>
+                            <strong>대한항공 취항지</strong>
+                            <button v-for="item in filteredAirports" :key="item.value" type="button"
+                                :aria-label="`${item.city} ${item.name} ${item.value} 선택`"
+                                @click="selectAirport(item.value)">
+                                <span>✈ {{ item.city }} / {{ item.name }}</span>
+                                <b>{{ item.value }}</b>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="activePanel === 'dates'" id="date-search-panel"
+                    class="korean-search-panel korean-calendar-panel" role="dialog" aria-modal="false"
+                    aria-labelledby="date-search-title">
+                    <header>
+                        <h2 id="date-search-title">출발일과 귀국일 선택</h2>
+                        <button type="button" data-panel-close aria-label="날짜 선택 닫기" @click="closePanel()">×</button>
+                    </header>
+                    <div class="korean-calendar-panel__top">
+                        <button type="button" :class="{ 'is-active': form.trip === 'roundtrip' }"
+                            @click="form.trip = 'roundtrip'">왕복</button>
+                        <button type="button" :class="{ 'is-active': form.trip === 'oneway' }"
+                            @click="form.trip = 'oneway'">편도</button>
+                        <label><input type="checkbox" /> 가까운 날짜 함께 조회</label>
+                    </div>
+                    <div class="korean-calendar-panel__months">
+                        <section v-for="month in calendarMonths" :key="month.key">
+                            <h3>{{ month.year }}년 {{ month.month + 1 }}월</h3>
+                            <div class="korean-calendar-panel__week"><span v-for="day in weekDays" :key="day">{{ day
+                                    }}</span></div>
+                            <div class="korean-calendar-panel__days">
+                                <button v-for="(day, index) in month.days" :key="`${month.key}-${index}`" type="button"
+                                    :disabled="!day || day < dateAfter(0)" :aria-label="day ? fullDate(day) : undefined"
+                                    :aria-pressed="day ? day === form.departure || day === form.returning : undefined"
+                                    :class="{ 'is-selected': day === form.departure || day === form.returning, 'is-range': inRange(day) }"
+                                    @click="day && selectDate(day)">{{ day ? Number(day.slice(-2)) : '' }}</button>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div v-if="activePanel === 'travelers'" id="passenger-search-panel"
+                    class="korean-search-panel korean-passenger-panel" role="dialog" aria-modal="false"
+                    aria-labelledby="passenger-search-title">
+                    <header>
+                        <h2 id="passenger-search-title">승객 선택</h2>
+                        <button type="button" data-panel-close aria-label="승객 선택 닫기" @click="closePanel()">×</button>
+                    </header>
+                    <div class="korean-passenger-panel__counts">
+                        <div>
+                            <strong>성인 <small>만 12세 이상</small></strong>
+                            <span><button type="button" aria-label="성인 인원 감소" :disabled="form.adults <= 1"
+                                    @click="changeAdults(-1)">−</button><b>{{ form.adults }}</b><button type="button"
+                                    aria-label="성인 인원 증가" :disabled="form.adults >= 2"
+                                    @click="changeAdults(1)">＋</button></span>
+                        </div>
+                        <div><strong>소아 <small>만 2~11세</small></strong><span><button type="button"
+                                    disabled>−</button><b>0</b><button type="button" disabled>＋</button></span></div>
+                        <div><strong>유아 <small>만 2세 미만</small></strong><span><button type="button"
+                                    disabled>−</button><b>0</b><button type="button" disabled>＋</button></span></div>
+                    </div>
+                    <div class="korean-passenger-panel__notice">소아와 유아를 포함한 예약은 실제 대한항공 홈페이지에서 자세한 규정을 확인해 주세요.</div>
+                    <AppButton variant="fill" tone="primary" @click="closePanel(true)">확인</AppButton>
+                </div>
+                <p class="sr-only" aria-live="polite">{{ panelAnnouncement }}</p>
+                <p v-if="error" id="search-error" class="airline__error" role="alert" tabindex="-1">{{
+                    t(`onair.${error}`) }}</p>
             </form>
+        </section>
+        <section class="airline-home-banner">
+            <strong>대한항공 예매 시스템을 연습해 보세요</strong>
+            <span>항공권 검색부터 좌석 선택과 가상 결제까지 한 번에 체험할 수 있습니다.</span>
+            <b>FAQ</b>
         </section>
         <section class="airline-destinations">
             <header class="airline__section-heading">
@@ -86,14 +184,9 @@
                 <p>{{ t('onair.destDesc') }}</p>
             </header>
             <div class="airline-destinations__grid">
-                <button
-                    v-for="destination in destinations"
-                    :key="destination.code"
-                    class="airline-destination"
-                    :class="`airline-destination--${destination.key}`"
-                    type="button"
-                    @click="chooseDestination(destination.code)"
-                >
+                <button v-for="destination in destinations" :key="destination.code" class="airline-destination"
+                    :class="`airline-destination--${destination.key}`" type="button"
+                    @click="chooseDestination(destination.code)">
                     <div class="airline-destination__art" aria-hidden="true">
                         <span class="airline-destination__sun" />
                         <span class="airline-destination__building" />
@@ -129,7 +222,7 @@
 
 <script setup lang="ts">
 import { useOnairStore } from '~/stores/onair';
-import { airports, dateAfter, money } from '~/utils/onair';
+import { airport, airports, dateAfter, money } from '~/utils/onair';
 import type { AirportCode } from '~/types/onair';
 
 definePageMeta({ layout: 'airline' });
@@ -137,6 +230,11 @@ const store = useOnairStore();
 const { t } = useI18nText();
 const form = reactive({ ...store.draft.search });
 const error = ref('');
+const activePanel = ref<'from' | 'to' | 'dates' | 'travelers' | ''>('');
+const panelAnnouncement = ref('');
+const selectedRegion = ref(0);
+const regions = ['대한민국', '동북아시아', '동남아시아 / 서남아시아', '미주', '유럽', '대양주'];
+const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 watch(
     () => store.draft.search,
     (search) => {
@@ -144,10 +242,32 @@ watch(
         error.value = '';
     },
 );
-const travelerOptions = computed(() => [
-    { value: 1, label: t('onair.adultOne') },
-    { value: 2, label: t('onair.adultTwo') },
-]);
+const calendarMonths = computed(() => {
+    const base = new Date(`${form.departure || dateAfter(0)}T12:00:00`);
+    const first = new Date(base.getFullYear(), base.getMonth(), 1);
+    return [0, 1].map((offset) => {
+        const current = new Date(first.getFullYear(), first.getMonth() + offset, 1);
+        const year = current.getFullYear();
+        const month = current.getMonth();
+        const lastDay = new Date(year, month + 1, 0).getDate();
+        const days: (string | null)[] = Array(current.getDay()).fill(null);
+        for (let day = 1; day <= lastDay; day += 1) {
+            days.push(`${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`);
+        }
+        return { key: `${year}-${month}`, year, month, days };
+    });
+});
+const filteredAirports = computed(() => {
+    const codes = [
+        ['ICN', 'GMP', 'CJU'],
+        ['NRT'],
+        ['BKK'],
+        [],
+        ['CDG'],
+        [],
+    ][selectedRegion.value];
+    return airports.filter((item) => codes?.includes(item.value));
+});
 const destinations = [
     { code: 'NRT' as AirportCode, key: 'tokyo', english: 'TOKYO', price: 190000 },
     { code: 'BKK' as AirportCode, key: 'bangkok', english: 'BANGKOK', price: 330000 },
@@ -156,11 +276,69 @@ const destinations = [
 function swap() {
     [form.from, form.to] = [form.to, form.from];
 }
+function togglePanel(panel: 'from' | 'to' | 'dates' | 'travelers') {
+    if (activePanel.value === panel) {
+        closePanel();
+        return;
+    }
+    activePanel.value = panel;
+    nextTick(() => document.querySelector<HTMLButtonElement>('.korean-search-panel [data-panel-close]')?.focus());
+}
+function closePanel(advance = false) {
+    const panel = activePanel.value;
+    if (!panel) return;
+    activePanel.value = '';
+    const currentTarget = { from: 'departure-airport', to: 'arrival-airport', dates: 'departure-date', travelers: 'travelers' }[panel];
+    const nextTarget = { from: 'arrival-airport', to: 'departure-date', dates: 'travelers', travelers: 'search-submit' }[panel];
+    nextTick(() => document.getElementById(advance ? nextTarget : currentTarget)?.focus());
+}
+function selectAirport(code: string) {
+    const panel = activePanel.value;
+    if (activePanel.value === 'from') form.from = code as AirportCode;
+    if (activePanel.value === 'to') form.to = code as AirportCode;
+    panelAnnouncement.value = `${airport(code as AirportCode).city} ${airport(code as AirportCode).name}이 ${panel === 'from' ? '출발지' : '도착지'}로 선택되었습니다.`;
+    closePanel(true);
+}
+function shortDate(value: string) {
+    if (!value) return '날짜 선택';
+    const [, month, day] = value.split('-');
+    return `${Number(month)}월 ${Number(day)}일`;
+}
+function fullDate(value: string) {
+    const date = new Date(`${value}T12:00:00`);
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${weekDays[date.getDay()]}요일`;
+}
+function selectDate(value: string) {
+    if (form.trip === 'oneway') {
+        form.departure = value;
+        panelAnnouncement.value = `${fullDate(value)} 출발일이 선택되었습니다.`;
+        closePanel(true);
+        return;
+    }
+    if (!form.departure || form.returning || value <= form.departure) {
+        form.departure = value;
+        form.returning = '';
+        return;
+    }
+    form.returning = value;
+    panelAnnouncement.value = `${fullDate(form.departure)} 출발, ${fullDate(value)} 귀국 일정이 선택되었습니다.`;
+    closePanel(true);
+}
+function inRange(value: string | null) {
+    return Boolean(value && form.departure && form.returning && value > form.departure && value < form.returning);
+}
+function changeAdults(amount: number) {
+    form.adults = Math.min(2, Math.max(1, form.adults + amount));
+    panelAnnouncement.value = `성인 ${form.adults}명으로 변경되었습니다.`;
+}
 function chooseDestination(code: AirportCode) {
     form.from = 'ICN';
     form.to = code;
     document.getElementById('departure-date')?.focus();
-    document.querySelector('.airline-search')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.querySelector('.airline-search')?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'center',
+    });
 }
 async function submit() {
     error.value = store.search(form);
