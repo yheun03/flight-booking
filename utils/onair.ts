@@ -58,6 +58,17 @@ export function flightsFor(search: Search, segment: SegmentId, fare: FareId = 'l
         CDG: { price: 628000, tax: 112000, miles: 40000, duration: from === 'ICN' ? 870 : 765, earned: 5500, no: 301 },
     }[route as 'CJU' | 'NRT' | 'BKK' | 'CDG'];
     if (!data || !validDate(date)) return [];
+    const cabin = search.cabin || 'economy';
+    const cabinSurcharge = {
+        economy: 0,
+        prestige: Math.max(Math.round((data.price * 1.9) / 1000) * 1000, 240000),
+        first: Math.max(Math.round((data.price * 5.8) / 1000) * 1000, 820000),
+    }[cabin];
+    const fareSurcharge = {
+        economy: { light: 0, standard: 35000, flex: 85000 },
+        prestige: { light: 0, standard: 170000, flex: 350000 },
+        first: { light: 0, standard: 280000, flex: 520000 },
+    }[cabin][fare];
     const departures = route === 'CJU' ? ['06:35', '07:05', '07:10', '07:20', '08:20', '08:55', '09:25'] : ['09:10', '14:30', '21:45'];
     return departures.map((departure, index) => {
         const departureUtc = Date.parse(`${date}T${departure}:00Z`) - airport(from).offset * 3600000;
@@ -73,28 +84,44 @@ export function flightsFor(search: Search, segment: SegmentId, fare: FareId = 'l
             arrival: arrival.slice(11, 16),
             arrivalDate: arrival.slice(0, 10),
             duration: data.duration,
-            aircraft: route === 'CDG' ? 'B787-9' : route === 'CJU' ? 'A220-300' : 'A321',
+            aircraft:
+                cabin === 'first' ? 'B747-8i' : cabin === 'prestige' ? 'B787-9' : route === 'CDG' ? 'B787-9' : route === 'CJU' ? 'A220-300' : 'A321',
+            cabin,
             fare,
             price:
                 data.price +
                 (route === 'CJU' ? ([4000, 4000, 4000, 0, 0, 64000, 64000][index] ?? 0) : index * 17000) +
-                { light: 0, standard: 35000, flex: 85000 }[fare],
+                cabinSurcharge +
+                fareSurcharge,
             tax: data.tax,
-            miles: data.miles + { light: 0, standard: 3000, flex: 6000 }[fare],
-            earnedMiles: data.earned,
+            miles: Math.round((data.miles + { light: 0, standard: 3000, flex: 6000 }[fare]) * { economy: 1, prestige: 1.8, first: 3 }[cabin]),
+            earnedMiles: Math.round(data.earned * { economy: 1, prestige: 1.5, first: 2 }[cabin]),
             departureUtc,
         };
     });
 }
 export function seatLetters(flight: Flight) {
+    if (flight.cabin === 'first') return ['A', 'J'];
+    if (flight.cabin === 'prestige') return ['A', 'B', 'D', 'E', 'H', 'J'];
     if (flight.aircraft === 'A220-300') return ['A', 'B', 'D', 'E', 'F'];
     return flight.aircraft === 'A321' ? ['A', 'B', 'C', 'D', 'E', 'F'] : ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J'];
 }
 export function seatBlocked(flight: Flight, seat: string) {
     const row = Number(seat.slice(0, -1));
-    const minRow = flight.aircraft === 'A220-300' ? 28 : 1;
-    const maxRow = flight.aircraft === 'A220-300' ? 55 : flight.aircraft === 'B787-9' ? 24 : 20;
+    const minRow = flight.cabin === 'first' ? 1 : flight.cabin === 'prestige' ? 7 : ['A220-300', 'B787-9'].includes(flight.aircraft) ? 28 : 1;
+    const maxRow =
+        flight.cabin === 'first'
+            ? 3
+            : flight.cabin === 'prestige'
+              ? 11
+              : flight.aircraft === 'A220-300'
+                ? 55
+                : flight.aircraft === 'B787-9'
+                  ? 61
+                  : 20;
     if (!seatLetters(flight).includes(seat.slice(-1)) || row < minRow || row > maxRow) return 'unavailable';
+    if (flight.cabin === 'first') return row === 1 && seat.endsWith('J') ? 'occupied' : '';
+    if (flight.cabin === 'prestige') return row === 10 && seat.endsWith('J') ? 'occupied' : '';
     if (flight.aircraft === 'A220-300' ? [28, 38, 39, 55].includes(row) : row === 10 || row === 11) return 'exit';
     return (row * 7 + seat.charCodeAt(seat.length - 1)) % 9 === 0 ? 'occupied' : '';
 }

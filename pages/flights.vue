@@ -30,7 +30,7 @@
                 </div>
                 <p class="sr-only" aria-live="polite">{{ dateChangeAnnouncement }}</p>
                 <div class="airline__flight-toolbar">
-                    <p>{{ currentDate }} · {{ t('onair.direct') }} · {{ t('onair.economy') }}</p>
+                    <p>{{ currentDate }} · {{ t('onair.direct') }} · {{ cabinLabel }}</p>
                     <AppSelect v-model="sort" :label="t('onair.sort')" :items="sortOptions" :width="175" required
                         size="sm" />
                 </div>
@@ -95,23 +95,19 @@
                             :active="selected?.id === entry.flight.id && selected?.fare === fare.id"
                             :variant="selected?.id === entry.flight.id && selected?.fare === fare.id ? 'fill' : 'outline'"
                             :tone="selected?.id === entry.flight.id && selected?.fare === fare.id ? 'primary' : 'gray'"
-                            :aria-label="`${entry.flight.number} ${t(`onair.${fare.id}`)} 운임 ${money(entry.flight.price + entry.flight.tax + fare.extra)}원 선택`"
+                            :aria-label="`${entry.flight.number} ${fareLabel(fare.id)} 운임 ${money(entry.flight.price + entry.flight.tax + fare.extra)}원 선택`"
                             @click="store.selectFlight(segment, entry.index, fare.id)">
-                            <span class="korean-fare-name">{{ t(`onair.${fare.id}`) }}</span>
+                            <span class="korean-fare-name">{{ fareLabel(fare.id) }}</span>
                             <strong>{{ money(entry.flight.price + entry.flight.tax + fare.extra) }} 원</strong>
                             <small v-if="fare.id !== 'light'">{{ fare.id === 'standard' ? '4석' : '2석' }}</small>
                             <span v-if="selected?.id === entry.flight.id && selected?.fare === fare.id">✓</span>
-                        </AppButton>
-                        <AppButton disabled>
-                            <span class="korean-fare-name">프레스티지</span>
-                            <strong>{{ money(entry.flight.price + entry.flight.tax + 120000) }} 원</strong>
-                            <small>미운영</small>
                         </AppButton>
                     </div>
                     <dl v-if="selected?.id === entry.flight.id" class="airline-fare-benefits" aria-label="선택 운임 조건">
                         <div>
                             <dt>무료 위탁 수하물</dt>
-                            <dd>1개 · 20kg 이내</dd>
+                            <dd>{{ store.draft.search.cabin === 'economy' ? '1개 · 20kg 이내' : store.draft.search.cabin
+                                === 'prestige' ? '2개 · 각 32kg 이내' : '3개 · 각 32kg 이내' }}</dd>
                         </div>
                         <div>
                             <dt>좌석 선택</dt>
@@ -162,7 +158,7 @@
                 <section class="airline__panel airline__stack">
                     <h2>{{ t('onair.fareConditions') }}</h2>
                     <p v-for="fare in fares" :key="fare.id">
-                        <strong>{{ t(`onair.${fare.id}`) }}</strong>
+                        <strong>{{ fareLabel(fare.id) }}</strong>
                         · {{ t(`onair.${fare.id}Rule`) }}
                     </p>
                     <p class="airline__muted">{{ t('onair.fareNotice') }}</p>
@@ -209,11 +205,24 @@ watch(
         error.value = '';
     },
 );
-const fares: { id: FareId; extra: number }[] = [
-    { id: 'light', extra: 0 },
-    { id: 'standard', extra: 35000 },
-    { id: 'flex', extra: 85000 },
-];
+const cabinLabel = computed(() => ({ economy: '일반석', prestige: '프레스티지석', first: '일등석' })[store.draft.search.cabin]);
+const fares = computed<{ id: FareId; extra: number }[]>(() => {
+    const extras = {
+        economy: [0, 35000, 85000],
+        prestige: [0, 170000, 350000],
+        first: [0, 280000, 520000],
+    }[store.draft.search.cabin];
+    return [
+        { id: 'light', extra: extras[0] },
+        { id: 'standard', extra: extras[1] },
+        { id: 'flex', extra: extras[2] },
+    ];
+});
+function fareLabel(fare: FareId) {
+    if (store.draft.search.cabin === 'economy') return t(`onair.${fare}`);
+    const prefix = store.draft.search.cabin === 'first' ? '일등석' : '프레스티지';
+    return `${prefix} ${{ light: '세이버', standard: '스탠다드', flex: '플렉스' }[fare]}`;
+}
 const sortOptions = computed(() => [
     { value: 'price', label: t('onair.priceSort') },
     { value: 'time', label: t('onair.timeSort') },

@@ -41,15 +41,27 @@
             </div>
         </section>
         <section class="airline-search" :aria-label="t('onair.search')">
+            <nav class="airline-search__quick-nav" aria-label="빠른 메뉴">
+                <NuxtLink to="/" class="is-current" aria-current="page">✈ 항공권 예매</NuxtLink>
+                <NuxtLink to="/my-booking">♙ 나의 여행</NuxtLink>
+                <NuxtLink to="/check-in">▣ 체크인</NuxtLink>
+                <NuxtLink to="/travel-guide">◷ 출도착 / 스케줄</NuxtLink>
+            </nav>
             <form @submit.prevent="submit" @keydown.esc.prevent="closePanel()">
                 <div class="airline-search__top">
                     <div class="airline__inline">
-                        <AppChoice v-model="form.trip" type="radio" variant="chip" name="trip" value="oneway"
-                            :label="t('onair.oneway')" />
+                        <div class="airline-search__modes" role="group" aria-label="예매 방식">
+                            <button type="button" :class="{ 'is-active': bookingMode === 'fare' }"
+                                @click="bookingMode = 'fare'">예매</button>
+                            <button type="button" :class="{ 'is-active': bookingMode === 'miles' }"
+                                @click="bookingMode = 'miles'">마일리지 예매</button>
+                        </div>
                         <AppChoice v-model="form.trip" type="radio" variant="chip" name="trip" value="roundtrip"
                             :label="t('onair.roundtrip')" />
+                        <AppChoice v-model="form.trip" type="radio" variant="chip" name="trip" value="oneway"
+                            :label="t('onair.oneway')" />
                     </div>
-                    <span>{{ t('onair.searchHint') }}</span>
+                    <AppChoice v-model="nearbyDates" label="가까운 날짜 함께 조회" />
                 </div>
                 <div class="airline-search__fields">
                     <button id="departure-airport" class="korean-search-field korean-search-field--airport"
@@ -80,7 +92,13 @@
                         :aria-expanded="activePanel === 'travelers'" @click="togglePanel('travelers')">
                         <span>{{ t('onair.travelers') }}</span>
                         <strong>성인 {{ form.adults }}</strong>
-                        <small>일반석</small>
+                        <small>소아 0 · 유아 0</small>
+                    </button>
+                    <button id="cabin-class" class="korean-search-field korean-search-field--class" type="button"
+                        aria-haspopup="dialog" aria-controls="class-search-panel"
+                        :aria-expanded="activePanel === 'class'" @click="togglePanel('class')">
+                        <span>좌석 등급</span>
+                        <strong>{{ cabinLabel }}</strong>
                     </button>
                     <AppButton id="search-submit" class="airline-search__submit" type="submit" variant="fill"
                         tone="primary" size="lg">
@@ -117,7 +135,7 @@
                     class="korean-search-panel korean-calendar-panel" role="dialog" aria-modal="false"
                     aria-labelledby="date-search-title">
                     <header>
-                        <h2 id="date-search-title">출발일과 귀국일 선택</h2>
+                        <h2 id="date-search-title">출발일</h2>
                         <button type="button" data-panel-close aria-label="날짜 선택 닫기" @click="closePanel()">×</button>
                     </header>
                     <div class="korean-calendar-panel__top">
@@ -165,14 +183,32 @@
                     <div class="korean-passenger-panel__notice">소아와 유아를 포함한 예약은 실제 대한항공 홈페이지에서 자세한 규정을 확인해 주세요.</div>
                     <AppButton variant="fill" tone="primary" @click="closePanel(true)">확인</AppButton>
                 </div>
+                <div v-if="activePanel === 'class'" id="class-search-panel"
+                    class="korean-search-panel korean-class-panel" role="dialog" aria-modal="false"
+                    aria-labelledby="class-search-title">
+                    <header>
+                        <h2 id="class-search-title">좌석 등급 선택</h2>
+                        <button type="button" data-panel-close aria-label="좌석 등급 선택 닫기" @click="closePanel()">×</button>
+                    </header>
+                    <div class="korean-class-panel__options">
+                        <button v-for="item in cabinClasses" :key="item.value" type="button"
+                            :class="{ 'is-active': form.cabin === item.value }"
+                            :aria-pressed="form.cabin === item.value" @click="selectCabinClass(item.value)">{{
+                            item.label }}</button>
+                    </div>
+                    <label class="korean-class-panel__upgrade">
+                        <span>마일리지로 좌석 승급을 하시겠습니까?</span>
+                        <input v-model="upgradeWithMiles" type="checkbox" />
+                    </label>
+                </div>
                 <p class="sr-only" aria-live="polite">{{ panelAnnouncement }}</p>
                 <p v-if="error" id="search-error" class="airline__error" role="alert" tabindex="-1">{{
                     t(`onair.${error}`) }}</p>
             </form>
         </section>
         <section class="airline-home-banner">
-            <strong>대한항공 예매 시스템을 연습해 보세요</strong>
-            <span>항공권 검색부터 좌석 선택과 가상 결제까지 한 번에 체험할 수 있습니다.</span>
+            <strong>대한항공 예약 서비스를 한눈에 확인해 보세요</strong>
+            <span>항공권 검색부터 좌석 선택과 결제까지 한 번에 진행할 수 있습니다.</span>
             <b>FAQ</b>
         </section>
         <section class="airline-destinations">
@@ -212,6 +248,36 @@
                 </button>
             </div>
         </section>
+        <section class="airline-home-notice" aria-labelledby="home-notice-title">
+            <div>
+                <header>
+                    <h2 id="home-notice-title">알려드립니다</h2>
+                    <NuxtLink to="/travel-guide">목록보기</NuxtLink>
+                </header>
+                <ul>
+                    <li v-for="notice in notices" :key="notice.title">
+                        <NuxtLink to="/travel-guide">{{ notice.title }}</NuxtLink>
+                        <time>{{ notice.date }}</time>
+                    </li>
+                </ul>
+            </div>
+            <NuxtLink to="/my-page" class="airline-home-notice__app">
+                <span>대한항공 My 앱</span>
+                <small>내 손안의 여행 큐레이터</small>
+                <i aria-hidden="true">KOREAN AIR</i>
+            </NuxtLink>
+        </section>
+        <section class="airline-experience" aria-labelledby="experience-title">
+            <div>
+                <h2 id="experience-title">여행의 완성을 위한 경험</h2>
+                <div>
+                    <NuxtLink v-for="item in experiences" :key="item.label" :to="item.to">
+                        <span aria-hidden="true">{{ item.icon }}</span>
+                        <strong>{{ item.label }}</strong>
+                    </NuxtLink>
+                </div>
+            </div>
+        </section>
         <div class="airline-home__note">
             <span aria-hidden="true">✳</span>
             <p>{{ t('onair.demoIntro') }}</p>
@@ -223,15 +289,24 @@
 <script setup lang="ts">
 import { useOnairStore } from '~/stores/onair';
 import { airport, airports, dateAfter, money } from '~/utils/onair';
-import type { AirportCode } from '~/types/onair';
+import type { AirportCode, CabinClass } from '~/types/onair';
 
 definePageMeta({ layout: 'airline' });
 const store = useOnairStore();
 const { t } = useI18nText();
 const form = reactive({ ...store.draft.search });
 const error = ref('');
-const activePanel = ref<'from' | 'to' | 'dates' | 'travelers' | ''>('');
+const activePanel = ref<'from' | 'to' | 'dates' | 'travelers' | 'class' | ''>('');
 const panelAnnouncement = ref('');
+const nearbyDates = ref(false);
+const bookingMode = ref<'fare' | 'miles'>('fare');
+const upgradeWithMiles = ref(false);
+const cabinClasses: { value: CabinClass; label: string }[] = [
+    { value: 'economy', label: '일반석' },
+    { value: 'prestige', label: '프레스티지석' },
+    { value: 'first', label: '일등석' },
+];
+const cabinLabel = computed(() => cabinClasses.find((item) => item.value === form.cabin)?.label || '일반석');
 const selectedRegion = ref(0);
 const regions = ['대한민국', '동북아시아', '동남아시아 / 서남아시아', '미주', '유럽', '대양주'];
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -273,10 +348,26 @@ const destinations = [
     { code: 'BKK' as AirportCode, key: 'bangkok', english: 'BANGKOK', price: 330000 },
     { code: 'CDG' as AirportCode, key: 'paris', english: 'PARIS', price: 740000 },
 ];
+const notices = [
+    { title: '항공편 운항 정보 및 여행 안내', date: '2026년 10월 31일' },
+    { title: '대한항공 주요 서비스 안내', date: '2026년 10월 30일' },
+    { title: '마일리지 서비스 확대 안내', date: '2026년 10월 29일' },
+    { title: '국제선 탑승 전 확인 사항', date: '2026년 10월 27일' },
+];
+const experiences = [
+    { label: '이벤트', icon: '◇', to: '/travel-guide' },
+    { label: '대한항공카드', icon: '▭', to: '/payment' },
+    { label: '기프트카드', icon: '▱', to: '/payment' },
+    { label: '호텔', icon: '▥', to: '/travel-guide' },
+    { label: '렌터카', icon: '▰', to: '/travel-guide' },
+    { label: '기내 면세점', icon: '⌑', to: '/travel-guide' },
+    { label: '여행자 보험', icon: '♢', to: '/travel-guide' },
+    { label: '여행 상품', icon: '□', to: '/travel-guide' },
+];
 function swap() {
     [form.from, form.to] = [form.to, form.from];
 }
-function togglePanel(panel: 'from' | 'to' | 'dates' | 'travelers') {
+function togglePanel(panel: 'from' | 'to' | 'dates' | 'travelers' | 'class') {
     if (activePanel.value === panel) {
         closePanel();
         return;
@@ -288,9 +379,14 @@ function closePanel(advance = false) {
     const panel = activePanel.value;
     if (!panel) return;
     activePanel.value = '';
-    const currentTarget = { from: 'departure-airport', to: 'arrival-airport', dates: 'departure-date', travelers: 'travelers' }[panel];
-    const nextTarget = { from: 'arrival-airport', to: 'departure-date', dates: 'travelers', travelers: 'search-submit' }[panel];
+    const currentTarget = { from: 'departure-airport', to: 'arrival-airport', dates: 'departure-date', travelers: 'travelers', class: 'cabin-class' }[panel];
+    const nextTarget = { from: 'arrival-airport', to: 'departure-date', dates: 'travelers', travelers: 'cabin-class', class: 'search-submit' }[panel];
     nextTick(() => document.getElementById(advance ? nextTarget : currentTarget)?.focus());
+}
+function selectCabinClass(value: CabinClass) {
+    form.cabin = value;
+    panelAnnouncement.value = `${cabinClasses.find((item) => item.value === value)?.label}이 선택되었습니다.`;
+    closePanel(true);
 }
 function selectAirport(code: string) {
     const panel = activePanel.value;
@@ -341,6 +437,7 @@ function chooseDestination(code: AirportCode) {
     });
 }
 async function submit() {
+    store.paymentMethod = bookingMode.value === 'miles' ? 'miles' : 'card';
     error.value = store.search(form);
     if (error.value) {
         await nextTick();

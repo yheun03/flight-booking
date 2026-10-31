@@ -10,7 +10,7 @@
             <div>
                 <p>현재 예약</p>
                 <h2 id="baggage-booking-title">{{ booking.flights[0].from }} → {{ booking.flights[0].to }}</h2>
-                <span>예약번호 {{ booking.id }} · {{ booking.flights.length > 1 ? '왕복' : '편도' }} · 일반석</span>
+                <span>예약번호 {{ booking.id }} · {{ booking.flights.length > 1 ? '왕복' : '편도' }} · {{ cabinLabel }}</span>
             </div>
             <dl>
                 <div>
@@ -19,7 +19,7 @@
                 </div>
                 <div>
                     <dt>무료 위탁</dt>
-                    <dd>1개 · 20kg 이내</dd>
+                    <dd>{{ checkedBaggage }}</dd>
                 </div>
             </dl>
         </section>
@@ -39,7 +39,7 @@
             <section class="airline__panel airline__stack">
                 <span class="airline-info-grid__number" aria-hidden="true">02</span>
                 <h2>무료 위탁 수하물</h2>
-                <strong>일반석 1개 · 20kg 이내</strong>
+                <strong>{{ cabinLabel }} {{ checkedBaggage }}</strong>
                 <p>노선, 운임, 회원 등급에 따라 허용량이 달라질 수 있습니다. 공항에서는 포장 상태와 실제 측정값을 기준으로 접수합니다.</p>
                 <ul>
                     <li>이름과 연락처 표기</li>
@@ -69,4 +69,6 @@ definePageMeta({ layout: 'airline' });
 useHead({ title: '수하물 안내' });
 const store = useOnairStore();
 const booking = computed(() => store.booking);
+const cabinLabel = computed(() => ({ economy: '일반석', prestige: '프레스티지석', first: '일등석' })[booking.value?.flights[0]?.cabin || 'economy']);
+const checkedBaggage = computed(() => booking.value?.flights[0]?.cabin === 'first' ? '3개 · 각 32kg 이내' : booking.value?.flights[0]?.cabin === 'prestige' ? '2개 · 각 32kg 이내' : '1개 · 20kg 이내');
 </script>

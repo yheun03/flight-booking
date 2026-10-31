@@ -18,8 +18,8 @@
                 <li><span aria-hidden="true">2</span><strong>좌석 선택</strong>
                     <NuxtLink to="/seats">좌석 선택 →</NuxtLink>
                 </li>
-                <li><span aria-hidden="true">3</span><strong>여행 준비</strong>
-                    <NuxtLink to="/travel-guide">절차 확인 →</NuxtLink>
+                <li><span aria-hidden="true">3</span><strong>기내식 사전 주문</strong>
+                    <NuxtLink to="/meals">메뉴 선택 →</NuxtLink>
                 </li>
             </ol>
         </section>

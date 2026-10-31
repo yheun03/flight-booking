@@ -1,8 +1,17 @@
 export type AirportCode = 'ICN' | 'GMP' | 'CJU' | 'NRT' | 'BKK' | 'CDG';
 export type SegmentId = 'outbound' | 'inbound';
 export type FareId = 'light' | 'standard' | 'flex';
-export type MealId = 'regular' | 'vegetarian' | 'fruit';
-export type Search = { trip: 'oneway' | 'roundtrip'; from: AirportCode; to: AirportCode; departure: string; returning: string; adults: number };
+export type CabinClass = 'economy' | 'prestige' | 'first';
+export type MealId = 'regular' | 'vegetarian' | 'fruit' | 'bibimbap' | 'galbi' | 'steak' | 'lobster' | 'ginsengSoup' | 'vegan';
+export type Search = {
+    trip: 'oneway' | 'roundtrip';
+    from: AirportCode;
+    to: AirportCode;
+    departure: string;
+    returning: string;
+    adults: number;
+    cabin: CabinClass;
+};
 export type Passenger = { id: string; firstName: string; lastName: string; birth: string };
 export type Flight = {
     id: string;
@@ -15,7 +24,8 @@ export type Flight = {
     arrival: string;
     arrivalDate: string;
     duration: number;
-    aircraft: 'A220-300' | 'A321' | 'B787-9';
+    aircraft: 'A220-300' | 'A321' | 'B787-9' | 'B747-8i';
+    cabin: CabinClass;
     fare: FareId;
     price: number;
     tax: number;
@@ -23,7 +33,8 @@ export type Flight = {
     earnedMiles: number;
     departureUtc: number;
 };
-export type PassengerService = { seat: string; meal: MealId | ''; checkedIn: boolean };
+export type MealPreference = { doneness?: string; starter?: string; soup?: string };
+export type PassengerService = { seat: string; meal: MealId | ''; mealPreference?: MealPreference; checkedIn: boolean };
 export type Booking = {
     id: string;
     transactionId: string;

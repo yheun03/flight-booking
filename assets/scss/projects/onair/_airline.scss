@@ -4,13 +4,14 @@
 :root {
     --onair-bg: #ffffff;
     --onair-paper: var(--theme-gray-0);
-    --onair-ink: #071d49;
-    --onair-muted: #5f6b7a;
-    --onair-line: #e5e8ee;
-    --onair-soft: #eaf7fc;
-    --onair-blue: var(--theme-primary);
-    --onair-sky: #57b8e8;
-    --onair-pale: #dff4fc;
+    --onair-ink: #00256c;
+    --onair-muted: #555d6d;
+    --onair-line: #dfe2e7;
+    --onair-line-strong: #c9ced7;
+    --onair-soft: #eef8fc;
+    --onair-blue: #00256c;
+    --onair-sky: #64b5e4;
+    --onair-pale: #e7f6fc;
 }
 
 body:has(.airline) {
@@ -23,8 +24,8 @@ body:has(.airline) {
     color: var(--onair-ink);
     background: var(--onair-bg);
     min-height: 100vh;
-    line-height: 1.6;
-    font-size: 15px;
+    line-height: 1.5;
+    font-size: 14px;
 
     a {
         color: inherit;
@@ -76,7 +77,7 @@ body:has(.airline) {
     }
 
     &__header {
-        min-height: 82px;
+        min-height: 88px;
         padding: 0 max(5%, calc((100% - 1180px) / 2));
         display: flex;
         align-items: center;
@@ -220,27 +221,45 @@ body:has(.airline) {
     }
 
     &__footer {
+        padding: 48px max(5%, calc((100% - 1180px) / 2)) 28px;
+        background: #fff;
+        border-top: 1px solid var(--onair-line);
+        color: var(--onair-muted);
+        font-size: 11px;
+    }
+
+    &__footer-links {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 32px;
+        padding-bottom: 40px;
+
+        section {
+            display: grid;
+            align-content: start;
+            gap: 12px;
+        }
+
+        strong {
+            margin-bottom: 4px;
+            color: var(--onair-ink);
+            font-size: 13px;
+        }
+
+        a:hover {
+            color: var(--onair-blue);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+    }
+
+    &__footer-bottom {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-        padding: 32px max(5%, calc((100% - 1180px) / 2));
-        background: #f5f8fb;
+        padding-top: 24px;
         border-top: 1px solid var(--onair-line);
-        color: var(--onair-muted);
-        font-size: 11px;
-
-        nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 18px;
-
-            a:hover {
-                color: var(--onair-blue);
-                text-decoration: underline;
-                text-underline-offset: 4px;
-            }
-        }
     }
 
     &__footer-brand {
@@ -638,16 +657,51 @@ body:has(.airline) {
     border: 1px solid var(--onair-line);
     width: min(100%, 1040px);
     margin: -58px auto 0;
-    box-shadow: 0 10px 28px #071d7520;
-    border-radius: 12px;
-    padding: 22px 26px 26px;
+    box-shadow: 0 16px 44px #071d751a;
+    border-radius: 16px;
+    padding: 28px 32px 32px;
+
+    &__quick-nav {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin: -28px -32px 28px;
+        border-bottom: 1px solid var(--onair-line);
+        border-radius: 16px 16px 0 0;
+        background: #f7f9fc;
+        overflow: hidden;
+
+        a {
+            position: relative;
+            padding: 18px 12px;
+            color: var(--onair-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+
+            &.is-current {
+                background: #fff;
+                color: var(--onair-blue);
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    right: 24px;
+                    bottom: 0;
+                    left: 24px;
+                    height: 3px;
+                    border-radius: 3px 3px 0 0;
+                    background: var(--onair-blue);
+                }
+            }
+        }
+    }
 
     &__top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-bottom: 20px;
-        margin-bottom: 20px;
+        padding-bottom: 24px;
+        margin-bottom: 24px;
         border-bottom: 1px solid var(--onair-line);
 
         >span {
@@ -656,11 +710,35 @@ body:has(.airline) {
         }
     }
 
+    &__modes {
+        display: flex;
+        padding: 2px;
+        border-radius: 20px;
+        background: #f0f1f3;
+
+        button {
+            min-height: 30px;
+            padding: 0 18px;
+            border: 0;
+            border-radius: 18px;
+            background: transparent;
+            color: var(--onair-blue);
+            font-size: 12px;
+            cursor: pointer;
+
+            &.is-active {
+                background: var(--onair-blue);
+                color: #fff;
+                font-weight: 600;
+            }
+        }
+    }
+
     &__fields {
         display: grid;
-        grid-template-columns: 1.15fr 32px 1.15fr 1.55fr 0.9fr 132px;
+        grid-template-columns: 1.1fr 32px 1.1fr 1.45fr 0.9fr 0.9fr 132px;
         align-items: flex-end;
-        gap: 14px;
+        gap: 16px;
     }
 
     &__swap {
@@ -688,14 +766,14 @@ body:has(.airline) {
 .korean-search-field {
     min-width: 0;
     height: 66px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto 1fr;
     align-items: end;
     gap: 0 8px;
-    border: 0;
-    border-bottom: 1px solid #aeb7c7;
+    border: 1px solid var(--onair-line-strong);
+    border-radius: 10px;
     background: #fff;
     color: var(--onair-ink);
     text-align: left;
@@ -723,13 +801,14 @@ body:has(.airline) {
     }
 
     &--date strong,
-    &--passengers strong {
+    &--passengers strong,
+    &--class strong {
         font-size: 14px;
     }
 
     &:hover,
     &:focus-visible {
-        border-bottom-color: var(--onair-blue);
+        border-color: var(--onair-blue);
         background: #f8fcfe;
     }
 }
@@ -924,7 +1003,7 @@ body:has(.airline) {
 }
 
 .korean-passenger-panel {
-    width: min(430px, calc(100vw - 32px));
+    width: min(620px, calc(100vw - 32px));
 
     &__counts {
         display: grid;
@@ -978,6 +1057,47 @@ body:has(.airline) {
     >.app-button {
         float: right;
         min-width: 90px;
+    }
+}
+
+.korean-class-panel {
+    width: min(620px, calc(100vw - 32px));
+
+    &__options {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+
+        button {
+            min-height: 42px;
+            border: 0;
+            border-radius: 24px;
+            background: #f5f5f6;
+            color: var(--onair-ink);
+            font-size: 12px;
+            cursor: pointer;
+
+            &.is-active {
+                background: var(--onair-blue);
+                color: #fff;
+                font-weight: 600;
+            }
+        }
+    }
+
+    &__upgrade {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 24px;
+        color: var(--onair-muted);
+        font-size: 12px;
+
+        input {
+            width: 34px;
+            height: 20px;
+            accent-color: var(--onair-blue);
+        }
     }
 }
 
@@ -1254,6 +1374,88 @@ body:has(.airline) {
     }
 }
 
+.airline-payment-journey,
+.airline-payment-passengers {
+    display: grid;
+    gap: 12px;
+
+    >h2,
+    .airline__toolbar h2 {
+        margin-bottom: 8px;
+        font-size: 22px;
+    }
+}
+
+.airline-payment-journey article {
+    min-height: 88px;
+    padding: 18px 24px;
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid var(--onair-line);
+    border-radius: 8px;
+    background: #fff;
+
+    >span,
+    small {
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    strong {
+        font-size: 15px;
+    }
+
+    p {
+        margin-top: 6px;
+        color: var(--onair-muted);
+        font-size: 11px;
+    }
+
+    small {
+        padding: 5px 9px;
+        border-radius: 12px;
+        background: var(--onair-soft);
+    }
+}
+
+.airline-payment-passengers details {
+    border: 1px solid var(--onair-line);
+    border-radius: 7px;
+    background: #fff;
+
+    &[open] {
+        border-color: var(--onair-blue);
+    }
+
+    summary {
+        padding: 18px 24px;
+        color: var(--onair-blue);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    dl {
+        padding: 18px 24px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        border-top: 1px solid var(--onair-line);
+    }
+
+    dt {
+        color: var(--onair-muted);
+        font-size: 10px;
+    }
+
+    dd {
+        margin-top: 5px;
+        font-size: 13px;
+    }
+}
+
 .korean-passenger-card {
     overflow: hidden;
 
@@ -1284,12 +1486,12 @@ body:has(.airline) {
 }
 
 .airline-destinations {
-    padding: 72px 0 52px;
+    padding: 88px 0 64px;
 
     &__grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 24px;
+        gap: 20px;
     }
 }
 
@@ -1305,7 +1507,7 @@ body:has(.airline) {
         overflow: hidden;
         position: relative;
         height: 190px;
-        border-radius: 10px 10px 0 0;
+        border-radius: 14px 14px 0 0;
         background: #cbdccc;
         transition: transform 0.25s;
     }
@@ -1370,12 +1572,15 @@ body:has(.airline) {
     }
 
     &__info {
-        padding: 18px;
-        display: grid;
-        gap: 14px;
+        min-height: 156px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 18px;
         border: 1px solid var(--onair-line);
         border-top: 0;
-        border-radius: 0 0 10px 10px;
+        border-radius: 0 0 14px 14px;
         background: #fff;
 
         h3 {
@@ -1478,6 +1683,129 @@ body:has(.airline) {
         margin-left: auto;
         font-size: 8px;
         letter-spacing: 1px;
+    }
+}
+
+.airline-home-notice {
+    padding: 54px 0 72px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);
+    gap: 40px;
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+
+        h2 {
+            font-size: 24px;
+        }
+
+        a {
+            font-size: 11px;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+
+    li {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-top: 1px solid var(--onair-line);
+        font-size: 12px;
+
+        &:last-child {
+            border-bottom: 1px solid var(--onair-line);
+        }
+
+        a:first-child {
+            font-weight: 600;
+        }
+
+        time {
+            flex: 0 0 auto;
+            color: var(--onair-muted);
+            font-size: 11px;
+        }
+    }
+
+    &__app {
+        position: relative;
+        min-height: 236px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #dceef9;
+
+        span {
+            font-size: 22px;
+        }
+
+        small {
+            margin-top: 6px;
+            color: var(--onair-muted);
+        }
+
+        i {
+            position: absolute;
+            top: 34px;
+            right: -24px;
+            width: 190px;
+            height: 110px;
+            padding: 24px;
+            border: 8px solid #101f3e;
+            border-radius: 28px;
+            background: #78c6eb;
+            color: #fff;
+            font-size: 10px;
+            font-style: normal;
+            transform: rotate(-18deg);
+        }
+    }
+}
+
+.airline-experience {
+    margin: 0 calc(50% - 50vw);
+    padding: 42px max(5%, calc((100vw - 1180px) / 2));
+    background: #dceef9;
+
+    h2 {
+        margin-bottom: 24px;
+        font-size: 24px;
+    }
+
+    >div>div {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    a {
+        min-height: 104px;
+        padding: 16px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border-radius: 8px;
+        background: #ffffffb8;
+        text-align: center;
+
+        span {
+            font-size: 28px;
+        }
+
+        strong {
+            font-size: 11px;
+        }
     }
 }
 
@@ -2361,6 +2689,7 @@ body:has(.airline) {
 }
 
 .airline-seat-map {
+    position: relative;
     overflow-x: auto;
     padding: 10px 20px 40px;
     background: #f1f3f5;
@@ -2378,6 +2707,19 @@ body:has(.airline) {
 
         &--wide {
             width: 600px;
+        }
+
+        &--prestige {
+            width: 470px;
+            padding-top: 70px;
+            border-radius: 190px 190px 25px 25px;
+        }
+
+        &--first {
+            width: 290px;
+            min-height: 500px;
+            padding-top: 90px;
+            border-radius: 145px 145px 20px 20px;
         }
     }
 
@@ -2414,20 +2756,20 @@ body:has(.airline) {
     }
 
     &__aisle {
-        margin-left: 20px;
+        margin-left: 14px;
     }
 }
 
 .airline-seat {
     box-sizing: border-box;
-    width: 44px;
-    height: 44px;
+    width: 32px;
+    height: 32px;
     padding: 0;
     border: 1px solid #a0b3c2;
     border-bottom-width: 4px;
     border-radius: 6px 6px 4px 4px;
     background: #fff;
-    font-size: 11px;
+    font-size: 9px;
     color: var(--onair-ink);
     cursor: pointer;
 
@@ -2465,6 +2807,84 @@ body:has(.airline) {
         outline: 3px solid #42b8eb;
         outline-offset: 3px;
         box-shadow: 0 0 0 6px #fff;
+    }
+
+    &--prestige {
+        width: 46px;
+        height: 44px;
+        border: 2px solid #0a2375;
+        border-bottom-width: 7px;
+        background: #f8fbff;
+        font-size: 10px;
+    }
+
+    &--first {
+        width: 68px;
+        height: 62px;
+        margin-inline: 7px;
+        border: 2px solid #6e7479;
+        border-left-width: 7px;
+        border-bottom-width: 7px;
+        border-radius: 8px;
+        background: #fff;
+        font-size: 11px;
+    }
+}
+
+.korean-seat-confirm {
+    position: sticky;
+    z-index: 10;
+    bottom: 24px;
+    width: min(390px, calc(100% - 24px));
+    margin: -220px auto 24px;
+    padding: 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 20px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 12px 34px #071d4930;
+
+    >button {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        border: 0;
+        background: transparent;
+        color: var(--onair-blue);
+        font-size: 22px;
+        cursor: pointer;
+    }
+
+    >span,
+    >p {
+        grid-column: 1 / -1;
+        color: var(--onair-muted);
+        font-size: 12px;
+    }
+
+    >strong {
+        color: var(--onair-blue);
+        font-size: 30px;
+    }
+
+    >b {
+        align-self: end;
+        color: var(--onair-blue);
+        font-size: 14px;
+    }
+
+    >p {
+        margin-top: 8px;
+        padding-top: 16px;
+        border-top: 1px solid var(--onair-line);
+        color: var(--onair-ink);
+    }
+
+    >.app-button {
+        grid-column: 2;
+        min-width: 130px;
+        margin-top: 8px;
     }
 }
 
@@ -2577,6 +2997,28 @@ body:has(.airline) {
             font-size: 9px;
             line-height: 1.9;
         }
+
+        &--prestige>div i {
+            width: 46px;
+            height: 78px;
+            border-color: #293879;
+            background: linear-gradient(90deg, #263a79, #dfe5ed 56%, #202f6a);
+        }
+
+        &--first>div {
+            gap: 16px;
+
+            i {
+                width: 64px;
+                height: 82px;
+                border-color: #8a8d8e;
+                background: linear-gradient(135deg, #f8f8f5, #b8b4ad 50%, #fff);
+
+                &:nth-child(n + 3) {
+                    display: none;
+                }
+            }
+        }
     }
 
     >p {
@@ -2587,12 +3029,13 @@ body:has(.airline) {
 
 .airline-meals {
     display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
 }
 
 .airline-meal {
     display: grid;
-    grid-template-columns: 150px minmax(0, 1fr);
+    grid-template-columns: 1fr;
     padding: 0;
     border: 1px solid var(--onair-line);
     border-radius: 10px;
@@ -2624,6 +3067,21 @@ body:has(.airline) {
 
         &--fruit {
             background: #f0e1ce;
+        }
+
+        &--bibimbap,
+        &--galbi {
+            background: linear-gradient(145deg, #f2e6d4, #d5e2c8);
+        }
+
+        &--steak,
+        &--lobster {
+            background: linear-gradient(145deg, #ede7df, #d6dce2);
+        }
+
+        &--ginsengSoup,
+        &--vegan {
+            background: linear-gradient(145deg, #e8dfca, #dce8d8);
         }
     }
 
@@ -2700,15 +3158,15 @@ body:has(.airline) {
     }
 
     &__info {
-        padding: 26px;
+        min-height: 132px;
+        padding: 18px;
         align-self: center;
 
         h2 {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
             gap: 12px;
-            align-items: center;
-            font-size: 18px;
+            font-size: 14px;
+            line-height: 1.5;
 
             span {
                 color: var(--onair-blue);
@@ -2717,9 +3175,192 @@ body:has(.airline) {
         }
 
         p {
-            font-size: 12px;
+            font-size: 10px;
             color: var(--onair-muted);
             margin-top: 10px;
+        }
+
+        small {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 4px 7px;
+            border-radius: 20px;
+            background: #eef8ef;
+            color: #28733c;
+            font-size: 9px;
+        }
+    }
+}
+
+.korean-meal-intro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 20px;
+    border-radius: 8px;
+    background: #eef8fc;
+
+    strong {
+        color: var(--onair-blue);
+        font-size: 15px;
+    }
+
+    p {
+        color: var(--onair-muted);
+        font-size: 11px;
+    }
+}
+
+.korean-meal-modal {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    padding: 40px 20px;
+    display: grid;
+    place-items: start center;
+    overflow-y: auto;
+    background: #07133399;
+
+    &__dialog {
+        position: relative;
+        width: min(760px, 100%);
+        padding: 36px 42px;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 20px 60px #020a2438;
+
+        >button {
+            position: absolute;
+            z-index: 2;
+            top: 18px;
+            right: 22px;
+            border: 0;
+            background: transparent;
+            color: var(--onair-blue);
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        >h2 {
+            margin-top: 24px;
+            color: var(--onair-blue);
+            font-size: 22px;
+        }
+
+        >p {
+            margin-top: 8px;
+            color: var(--onair-muted);
+            font-size: 12px;
+        }
+
+        >section {
+            margin-top: 30px;
+
+            h3 {
+                margin-bottom: 14px;
+                color: var(--onair-blue);
+                font-size: 16px;
+
+                b {
+                    color: #d44732;
+                }
+            }
+        }
+
+        >.app-button {
+            min-width: 150px;
+            margin: 32px auto 0;
+        }
+    }
+
+    &__hero {
+        min-height: 330px;
+        border-radius: 8px;
+
+        .airline-meal__plate {
+            width: 220px;
+            height: 220px;
+
+            i {
+                width: 86px;
+                height: 48px;
+                top: 72px;
+                left: 40px;
+
+                &:nth-child(2) {
+                    width: 64px;
+                    height: 58px;
+                    top: 102px;
+                    left: 108px;
+                }
+
+                &:nth-child(3) {
+                    width: 52px;
+                    height: 45px;
+                    top: 50px;
+                    left: 112px;
+                }
+            }
+        }
+    }
+
+    &__pills,
+    &__options {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+
+        input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        span {
+            min-height: 42px;
+            padding: 10px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--onair-line);
+            border-radius: 22px;
+            color: var(--onair-blue);
+            font-size: 11px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        input:checked+span {
+            border-color: var(--onair-blue);
+            background: var(--onair-blue);
+            color: #fff;
+        }
+    }
+
+    &__options {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        span {
+            min-height: 145px;
+            align-content: start;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        i {
+            width: 100%;
+            height: 82px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background: radial-gradient(circle, #fdfdfb 0 36%, #ddd7ca 37% 49%, #ece7dd 50%);
+        }
+
+        input:checked+span i {
+            box-shadow: 0 0 0 2px #fff;
+        }
+
+        &--soup i {
+            background: radial-gradient(circle, #c5a46b 0 30%, #f6f4ec 31% 49%, #ddd7ca 50%);
         }
     }
 }
@@ -3000,20 +3641,7 @@ body:has(.airline) {
 
     .airline-search {
         margin-top: -172px;
-        margin-bottom: 52px;
-
-        &::before {
-            content: '✈  항공권 예매        ♙  나의 여행        ▣  체크인        ◷  출도착 / 스케줄';
-            display: block;
-            margin: -22px -26px 20px;
-            padding: 14px 24px;
-            border-radius: 12px 12px 0 0;
-            background: linear-gradient(90deg, #fff 0 25%, #edf8fd 25% 100%);
-            color: var(--onair-blue);
-            font-size: 11px;
-            font-weight: 600;
-            word-spacing: 12px;
-        }
+        margin-bottom: 64px;
     }
 
     .airline-destinations__grid {
@@ -3026,13 +3654,14 @@ body:has(.airline) {
 }
 
 .airline-home-banner {
-    min-height: 96px;
-    padding: 20px 32px;
+    min-height: 112px;
+    padding: 24px 32px;
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
     gap: 4px 20px;
-    border-radius: 8px;
+    border: 1px solid #c9e8f4;
+    border-radius: 14px;
     background: linear-gradient(105deg, #e7f8fd, #cfeefa);
     color: var(--onair-blue);
 
@@ -3373,19 +4002,19 @@ body:has(.airline) .app-modal {
         }
 
         &__footer {
-            flex-wrap: wrap;
             padding-bottom: 100px;
-            gap: 12px;
+        }
+
+        &__footer-links {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        &__footer-bottom {
+            align-items: flex-start;
+            flex-direction: column;
 
             p {
-                width: 100%;
-                order: 2;
                 font-size: 10px;
-            }
-
-            nav {
-                order: 1;
-                width: 100%;
             }
         }
 
@@ -3514,12 +4143,6 @@ body:has(.airline) .app-modal {
         .airline-search {
             margin-top: -132px;
             margin-bottom: 34px;
-
-            &::before {
-                content: '✈  항공권 예매     ♙  나의 여행';
-                white-space: nowrap;
-                overflow: hidden;
-            }
         }
     }
 
@@ -3563,6 +4186,20 @@ body:has(.airline) .app-modal {
     .airline-search {
         padding: 22px 18px;
 
+        &__quick-nav {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin: -22px -18px 22px;
+
+            a {
+                padding: 14px 8px;
+                border-bottom: 1px solid var(--onair-line);
+
+                &:nth-child(odd) {
+                    border-right: 1px solid var(--onair-line);
+                }
+            }
+        }
+
         &__top {
             align-items: flex-start;
             gap: 14px;
@@ -3592,7 +4229,8 @@ body:has(.airline) .app-modal {
         }
 
         .korean-search-field--date,
-        .korean-search-field--passengers {
+        .korean-search-field--passengers,
+        .korean-search-field--class {
             grid-column: 1 / -1;
         }
 
@@ -3878,6 +4516,321 @@ body:has(.airline) .app-modal {
     margin: 14mm;
 }
 
+// 대한항공 예약 화면 레퍼런스 정렬
+@media (min-width: 768px) {
+    .airline {
+        &__header {
+            min-height: 96px;
+            border-bottom: 0;
+        }
+
+        &__brand {
+            font-size: 24px;
+        }
+
+        &__main {
+            max-width: 1280px;
+        }
+
+        &__route-strip {
+            margin: 0 calc(50% - 50vw);
+            padding: 16px max(5%, calc((100vw - 1180px) / 2));
+            background:
+                linear-gradient(110deg, #9bdcf5 0%, #e9f8fd 56%, #94d9f3 100%);
+        }
+
+        &__routebar {
+            min-height: 68px;
+            padding: 0 26px;
+            border: 0;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 8px 18px #071d4917;
+        }
+
+        &__steps {
+            max-width: 290px;
+            margin: 24px 0 0 auto;
+        }
+
+        &__panel {
+            border-radius: 8px;
+        }
+
+        &__actions {
+            position: sticky;
+            z-index: 20;
+            bottom: 0;
+            margin: 16px calc(50% - 50vw) -90px;
+            padding: 18px max(5%, calc((100vw - 1180px) / 2));
+            border-top: 1px solid var(--onair-line);
+            background: #fff;
+            box-shadow: 0 -8px 24px #071d490d;
+        }
+    }
+
+    .airline-page--flights,
+    .airline-page--passengers,
+    .airline-page--payment {
+        padding-top: 28px;
+
+        >.airline-page__heading {
+            display: none;
+        }
+    }
+
+    .airline-page--flights {
+        max-width: 1180px;
+
+        >.airline__columns {
+            display: block;
+
+            >.airline-summary {
+                display: none;
+            }
+        }
+
+        .airline__toolbar:first-child {
+            padding: 12px 0 4px;
+            font-size: 18px;
+        }
+
+        .airline__flight-toolbar {
+            justify-content: flex-end;
+
+            >p {
+                margin-right: auto;
+            }
+        }
+    }
+
+    .airline-flight {
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        border-radius: 12px;
+        background: #f8f9fb;
+
+        &.is-lowest {
+            border-left: 0;
+        }
+
+        &__header {
+            min-height: 36px;
+            padding: 0 18px;
+        }
+
+        &__airline {
+            font-size: 11px;
+
+            b {
+                font-size: 14px;
+            }
+        }
+
+        &__schedule {
+            grid-template-columns: 110px 120px 110px minmax(180px, 1fr);
+            padding: 22px 30px;
+
+            >div>strong {
+                font-size: 24px;
+            }
+        }
+
+        >.airline__muted {
+            display: none;
+        }
+
+        &__price {
+            display: none;
+        }
+
+        &__fares {
+            padding: 0 18px 18px 390px;
+            margin-top: -94px;
+            border-top: 0;
+
+            .app-button {
+                min-height: 94px;
+                border-color: var(--onair-line);
+                border-radius: 10px;
+                background: #fff;
+            }
+        }
+    }
+
+    .airline-page--seats {
+        max-width: 100%;
+        margin: 0 calc(50% - 50vw);
+        padding-inline: max(5%, calc((100vw - 1180px) / 2));
+        background: #f1f1f1;
+
+        >.airline-page__heading {
+            margin: 0 calc(50% - 50vw) 22px;
+            padding: 20px max(5%, calc((100vw - 1180px) / 2));
+            background: #071f72;
+            color: #fff;
+            text-align: center;
+
+            .airline__eyebrow,
+            p:last-child {
+                display: none;
+            }
+
+            h1 {
+                margin: 0;
+                font-size: 18px;
+            }
+        }
+
+        .airline__columns {
+            grid-template-columns: minmax(650px, 1fr) 340px;
+        }
+
+        .airline-seat-map {
+            max-height: none;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+        }
+    }
+
+    .airline-page--payment {
+        .airline__columns {
+            grid-template-columns: minmax(0, 1fr) 230px;
+        }
+
+        .airline-summary {
+            border: 0;
+            background: transparent;
+        }
+    }
+}
+
+.airline-home {
+    .airline-hero {
+        min-height: 332px;
+        background:
+            linear-gradient(130deg, transparent 40%, #ffffffad 40.5%, transparent 58%),
+            radial-gradient(ellipse at 72% 25%, #f0cbdc 0, transparent 27%),
+            linear-gradient(105deg, #8cd7f3 0%, #e9f8fd 58%, #9bdbf3 100%);
+    }
+
+    .airline-search {
+        width: min(100%, 1100px);
+        margin-top: -270px;
+        margin-bottom: 64px;
+        padding: 24px 28px 28px;
+        border: 0;
+        border-radius: 12px;
+        box-shadow: 0 12px 28px #071d491c;
+
+        &__quick-nav {
+            margin: -24px -28px 24px;
+            border-radius: 12px 12px 0 0;
+            background: #eef8fcaa;
+
+            a {
+                padding: 15px 10px;
+            }
+        }
+
+        &__top {
+            padding-bottom: 18px;
+            margin-bottom: 12px;
+            border-bottom: 0;
+        }
+
+        &__fields {
+            gap: 0;
+            grid-template-columns: 1.05fr 42px 1.05fr 1.45fr 0.95fr 0.95fr 130px;
+        }
+    }
+}
+
+.korean-search-field {
+    height: 66px;
+    border: 0;
+    border-right: 1px solid var(--onair-line);
+    border-radius: 0;
+
+    &:hover,
+    &:focus-visible {
+        border-color: var(--onair-line);
+        background: var(--onair-soft);
+        box-shadow: inset 0 -2px 0 var(--onair-blue);
+    }
+}
+
+.korean-search-panel {
+    top: calc(100% + 12px);
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 14px 36px #071d4930;
+}
+
+.airline-home-banner {
+    min-height: 148px;
+    border: 0;
+    border-radius: 8px;
+    text-align: center;
+
+    span {
+        grid-column: 1;
+    }
+}
+
+.airline-destination {
+    &__art {
+        border-radius: 8px 8px 0 0;
+    }
+
+    &__info {
+        min-height: 132px;
+        padding: 18px;
+        border-radius: 0 0 8px 8px;
+    }
+}
+
+@media (max-width: 767px) {
+    .airline-home .airline-search {
+        margin-top: -160px;
+        padding: 22px 18px;
+
+        &__quick-nav {
+            margin: -22px -18px 22px;
+        }
+    }
+
+    .korean-search-field {
+        border: 1px solid var(--onair-line-strong);
+        border-radius: 8px;
+    }
+
+    .korean-class-panel__options {
+        grid-template-columns: 1fr;
+    }
+
+    .airline-home-notice {
+        padding: 36px 0;
+        grid-template-columns: 1fr;
+        gap: 24px;
+
+        &__app {
+            min-height: 180px;
+        }
+    }
+
+    .airline-experience {
+        padding-block: 32px;
+
+        >div>div {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+    }
+}
+
 @media print {
 
     html,
@@ -4021,6 +4974,42 @@ body:has(.airline) .app-modal {
 
         .airline-booking-ref {
             padding-bottom: 4mm;
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .airline-meals {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .korean-meal-modal__dialog {
+        padding: 30px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .airline-meals,
+    .korean-meal-modal__options,
+    .korean-meal-modal__pills {
+        grid-template-columns: 1fr;
+    }
+
+    .korean-meal-intro {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .korean-meal-modal {
+        padding: 12px;
+
+        &__hero {
+            min-height: 220px;
+        }
+
+        &__options span {
+            min-height: 110px;
         }
     }
 }

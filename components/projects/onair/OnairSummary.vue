@@ -4,7 +4,7 @@
             <h2>{{ t('onair.summary') }}</h2>
             <span aria-hidden="true">↗</span>
         </div>
-        <p class="airline-summary__travelers">{{ t('onair.adults') }} {{ count }} · {{ t('onair.economy') }}</p>
+        <p class="airline-summary__travelers">{{ t('onair.adults') }} {{ count }} · {{ cabinLabel }}</p>
         <div v-for="flight in flights" :key="flight.id" class="airline-summary__flight">
             <span class="airline__eyebrow">{{ t(`onair.${flight.segment}`) }} · {{ flight.number }}</span>
             <strong>
@@ -48,6 +48,10 @@ const store = useOnairStore();
 const { t, locale } = useI18nText();
 const flights = computed(() => (props.confirmed ? store.booking?.flights || [] : store.draft.flights));
 const count = computed(() => (props.confirmed ? store.booking?.passengers.length || 0 : store.draft.search.adults));
+const cabinLabel = computed(() => {
+    const cabin = props.confirmed ? store.booking?.flights[0]?.cabin : store.draft.search.cabin;
+    return ({ economy: '일반석', prestige: '프레스티지석', first: '일등석' })[cabin || 'economy'];
+});
 const method = computed(() => (props.confirmed ? store.booking?.method || 'card' : store.paymentMethod));
 const totals = computed(() =>
     props.confirmed && store.booking ? { fare: store.booking.fare, tax: store.booking.tax, miles: store.booking.miles } : store.totals,

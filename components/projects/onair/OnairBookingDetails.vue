@@ -14,7 +14,8 @@
                         {{ t(`onair.${flight.segment}`) }}
                         <small>{{ flight.number }}</small>
                     </h2>
-                    <span class="airline__muted">{{ flight.aircraft }} · {{ t(`onair.${flight.fare}`) }}</span>
+                    <span class="airline__muted">{{ flight.aircraft }} · {{ cabinName(flight.cabin) }} · {{
+                        t(`onair.${flight.fare}`) }}</span>
                 </div>
                 <div class="airline-booking-route">
                     <div>
@@ -38,14 +39,14 @@
                             <span>
                                 {{ t('onair.seat') }}
                                 <b>{{ store.booking.services[flight.id][passenger.id].seat || t('onair.notSelected')
-                                    }}</b>
+                                }}</b>
                             </span>
                             <span>
                                 {{ t('onair.meals') }}
                                 <b>
                                     {{
                                         mealOffered(flight)
-                                            ? t(`onair.${store.booking.services[flight.id][passenger.id].meal || 'regular'}`)
+                                            ? mealName(store.booking.services[flight.id][passenger.id].meal || 'regular')
                                             : t('onair.notOffered')
                                     }}
                                 </b>
@@ -53,7 +54,7 @@
                             <span
                                 :class="{ airline__status: store.booking.services[flight.id][passenger.id].checkedIn }">
                                 {{ t(`onair.${store.booking.services[flight.id][passenger.id].checkedIn ? 'checkedIn' :
-                                'notCheckedIn'}`) }}
+                                    'notCheckedIn'}`) }}
                             </span>
                         </div>
                     </li>
@@ -68,7 +69,7 @@
                     <div v-for="(passenger, index) in store.booking.passengers" :key="passenger.id">
                         <dt>탑승객 · 전자항공권 번호</dt>
                         <dd>{{ passenger.lastName }} {{ passenger.firstName }} <strong>{{ ticketNumber(index)
-                                }}</strong></dd>
+                        }}</strong></dd>
                     </div>
                     <div>
                         <dt>발권일</dt>
@@ -88,7 +89,7 @@
                     </div>
                     <div>
                         <dt>무료 위탁 수하물</dt>
-                        <dd>탑승객 1인당 1개 · 20kg 이내</dd>
+                        <dd>탑승객 1인당 {{ checkedBaggage(store.booking.flights[0].cabin) }}</dd>
                     </div>
                     <div>
                         <dt>예약 연락처</dt>
@@ -123,6 +124,7 @@
 <script setup lang="ts">
 import { useOnairStore } from '~/stores/onair';
 import { airport, mealOffered, money } from '~/utils/onair';
+import type { CabinClass, MealId } from '~/types/onair';
 
 defineProps<{ print?: boolean }>();
 const store = useOnairStore();
@@ -132,6 +134,19 @@ const services = [
     { path: '/meals', key: 'meals' },
     { path: '/check-in', key: 'checkin' },
 ];
+const cabinName = (cabin: CabinClass) => ({ economy: '일반석', prestige: '프레스티지석', first: '일등석' })[cabin];
+const checkedBaggage = (cabin: CabinClass) => cabin === 'first' ? '3개 · 각 32kg 이내' : cabin === 'prestige' ? '2개 · 각 32kg 이내' : '1개 · 20kg 이내';
+const mealName = (meal: MealId) => ({
+    regular: '소고기 버섯 리조또',
+    vegetarian: '구운 채소와 허브 파스타',
+    fruit: '신선한 과일 플레이트',
+    bibimbap: '더덕 비빔밥과 바싹불고기',
+    galbi: '우엉떡갈비와 은갈치조림',
+    steak: '필레 미뇽 스테이크',
+    lobster: '바닷가재구이',
+    ginsengSoup: '가오리찜과 우거지갈비탕',
+    vegan: '두부떡갈비와 채개장',
+})[meal];
 function ticketNumber(index: number) {
     const seed = [...store.booking!.id].reduce((total, char) => total + char.charCodeAt(0), 0) * 100 + index;
     return `180-${String(seed).padStart(10, '0')}`;

@@ -11,7 +11,7 @@
                 <p class="airline__notice">{{ t('onair.checkinRule') }}</p>
                 <div class="airline__toolbar">
                     <strong>{{ flight.number }} · {{ flight.date }} {{ flight.departure }} ({{ airport(flight.from).zone
-                        }})</strong>
+                    }})</strong>
                     <span class="airline__status">{{ t(`onair.${open ? 'checkinAvailable' : 'notCheckedIn'}`) }}</span>
                 </div>
                 <section v-for="passenger in booking.passengers" :key="passenger.id"
@@ -24,11 +24,11 @@
                         {{ passenger.birth }} · {{ t('onair.seat') }}
                         <strong>{{ services[passenger.id].seat || t('onair.notSelected') }}</strong>
                         ·
-                        {{ mealOffered(flight) ? t(`onair.${services[passenger.id].meal || 'regular'}`) :
+                        {{ mealOffered(flight) ? mealName(services[passenger.id].meal || 'regular') :
                             t('onair.notOffered') }}
                     </p>
                     <span v-if="services[passenger.id].checkedIn" class="airline__status">✓ {{ t('onair.checkedIn')
-                        }}</span>
+                    }}</span>
                     <NuxtLink v-else-if="!services[passenger.id].seat" to="/seats" class="airline__text-link">{{
                         t('onair.seats') }} →</NuxtLink>
                 </section>
@@ -64,6 +64,7 @@
 <script setup lang="ts">
 import { useOnairStore } from '~/stores/onair';
 import { airport, checkinWindow, mealOffered } from '~/utils/onair';
+import type { MealId } from '~/types/onair';
 
 definePageMeta({ layout: 'airline' });
 useHead({ title: '온라인 체크인' });
@@ -79,6 +80,17 @@ const chosen = ref<string[]>([]);
 const consent = ref(false);
 const error = ref('');
 const allChecked = computed(() => Object.values(services.value).every((item) => item.checkedIn));
+const mealName = (meal: MealId) => ({
+    regular: '소고기 버섯 리조또',
+    vegetarian: '구운 채소와 허브 파스타',
+    fruit: '신선한 과일 플레이트',
+    bibimbap: '더덕 비빔밥과 바싹불고기',
+    galbi: '우엉떡갈비와 은갈치조림',
+    steak: '필레 미뇽 스테이크',
+    lobster: '바닷가재구이',
+    ginsengSoup: '가오리찜과 우거지갈비탕',
+    vegan: '두부떡갈비와 채개장',
+})[meal];
 watch(flightId, () => {
     chosen.value = [];
     consent.value = false;

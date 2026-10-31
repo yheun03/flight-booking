@@ -1,10 +1,18 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import type { Booking, FareId, Flight, MealId, Passenger, Search, SegmentId } from '~/types/onair';
+import type { Booking, FareId, Flight, MealId, MealPreference, Passenger, Search, SegmentId } from '~/types/onair';
 import { dateAfter, flightsFor, passengerError, searchError, seatBlocked, mealOffered, checkinWindow } from '~/utils/onair';
 
 const STORAGE_KEY = 'onair:booking:v1';
-const newSearch = (): Search => ({ trip: 'roundtrip', from: 'GMP', to: 'CJU', departure: dateAfter(7), returning: dateAfter(8), adults: 1 });
+const newSearch = (): Search => ({
+    trip: 'roundtrip',
+    from: 'GMP',
+    to: 'CJU',
+    departure: dateAfter(7),
+    returning: dateAfter(8),
+    adults: 1,
+    cabin: 'economy',
+});
 const newPassenger = (index: number): Passenger => ({ id: `p${index + 1}`, firstName: '', lastName: '', birth: '' });
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
@@ -53,6 +61,14 @@ export const useOnairStore = defineStore('onair', () => {
                     !saved.demo
                 )
                     throw new Error('invalid');
+                saved.draft.search.cabin ||= 'economy';
+                saved.draft.flights = saved.draft.flights.map((flight: Flight) => ({ ...flight, cabin: flight.cabin || saved.draft.search.cabin }));
+                if (saved.booking) {
+                    saved.booking.flights = saved.booking.flights.map((flight: Flight) => ({
+                        ...flight,
+                        cabin: flight.cabin || saved.draft.search.cabin,
+                    }));
+                }
                 draft.value = saved.draft;
                 booking.value = saved.booking;
                 balance.value = saved.balance;
@@ -188,11 +204,12 @@ export const useOnairStore = defineStore('onair', () => {
         persist();
         return '';
     }
-    function selectMeal(flightId: string, passengerId: string, meal: MealId) {
+    function selectMeal(flightId: string, passengerId: string, meal: MealId, preference?: MealPreference) {
         const service = booking.value?.services[flightId]?.[passengerId];
         const flight = booking.value?.flights.find((item) => item.id === flightId);
         if (!flight || !service || service.checkedIn || !mealOffered(flight)) return false;
         service.meal = meal;
+        service.mealPreference = preference;
         persist();
         return true;
     }

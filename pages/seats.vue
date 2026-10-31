@@ -45,8 +45,10 @@
                 <p class="airline__muted">{{ t('onair.seatHint') }} {{ t('onair.seatScroll') }}</p>
                 <div class="airline-seat-map" role="region" aria-describedby="seat-keyboard-instructions"
                     :aria-label="`${t('onair.seats')} · 방향키로 이동, Enter 또는 Space로 선택`">
-                    <div class="airline-seat-map__aircraft"
-                        :class="{ 'airline-seat-map__aircraft--wide': flight.aircraft === 'B787-9' }">
+                    <div class="airline-seat-map__aircraft" :class="[
+                        `airline-seat-map__aircraft--${flight.cabin}`,
+                        { 'airline-seat-map__aircraft--wide': flight.aircraft === 'B787-9' && flight.cabin === 'economy' },
+                    ]">
                         <div class="airline-seat-map__nose">
                             <span>↑ {{ t('onair.front') }}</span>
                             <strong>{{ flight.aircraft }}</strong>
@@ -63,6 +65,7 @@
                             :style="{ gridTemplateColumns: gridColumns }">
                             <span class="airline-seat-map__number">{{ row }}</span>
                             <button v-for="letter in letters" :key="letter" class="airline-seat" :class="[
+                                `airline-seat--${flight.cabin}`,
                                 {
                                     'airline-seat-map__aisle': aisleAfter(letter),
                                     'is-selected': service.seat === `${row}${letter}`,
@@ -89,6 +92,16 @@
                             </button>
                         </div>
                     </div>
+                    <div v-if="pendingSeat" class="korean-seat-confirm" role="dialog" aria-modal="false"
+                        aria-labelledby="seat-confirm-title">
+                        <button type="button" aria-label="좌석 선택 확인 닫기" @click="pendingSeat = ''">×</button>
+                        <span>{{ cabinLabel }}</span>
+                        <strong id="seat-confirm-title">{{ pendingSeat }}</strong>
+                        <b>무료 좌석</b>
+                        <p><strong>{{ passenger.lastName }} {{ passenger.firstName }}</strong>의 좌석을 선택하시겠습니까?</p>
+                        <AppButton variant="fill" tone="primary" @click="confirmSeat">{{ pendingSeat }} 좌석 선택
+                        </AppButton>
+                    </div>
                 </div>
                 <div class="airline__actions">
                     <AppButton to="/my-booking">{{ t('onair.myBooking') }}</AppButton>
@@ -101,13 +114,11 @@
                     <strong>① {{ passenger.lastName }} {{ passenger.firstName }}</strong>
                     <b>좌석 {{ service.seat || '미선택' }}</b>
                 </section>
-                <section class="korean-seat-side__cabin">
+                <section class="korean-seat-side__cabin" :class="`korean-seat-side__cabin--${flight.cabin}`">
                     <div aria-hidden="true"><i /><i /><i /><i /></div>
-                    <h2>일반석</h2>
+                    <h2>{{ cabinLabel }}</h2>
                     <ul>
-                        <li>{{ flight.aircraft }} 기종</li>
-                        <li>USB 포트 및 기내 엔터테인먼트</li>
-                        <li>좌석 선택 후 자동 저장</li>
+                        <li v-for="feature in cabinFeatures" :key="feature">{{ feature }}</li>
                     </ul>
                 </section>
                 <p>선택한 좌석은 탑승객 정보에 즉시 반영됩니다.</p>
@@ -137,24 +148,36 @@ const booking = computed(() => store.booking!);
 const flightId = ref(booking.value?.flights[0].id || '');
 const passengerId = ref(booking.value?.passengers[0].id || '');
 const activeSeat = ref('');
+const pendingSeat = ref('');
 const seatAnnouncement = ref('');
 const flight = computed(() => booking.value?.flights.find((item) => item.id === flightId.value));
 const passenger = computed(() => booking.value?.passengers.find((item) => item.id === passengerId.value)!);
 const service = computed(() => booking.value?.services[flightId.value]?.[passengerId.value]);
 const letters = computed(() => (flight.value ? seatLetters(flight.value) : []));
 const rows = computed(() => {
-    if (flight.value?.aircraft === 'A220-300') return Array.from({ length: 28 }, (_, index) => index + 28);
-    const count = flight.value?.aircraft === 'B787-9' ? 24 : 20;
-    return Array.from({ length: count }, (_, index) => index + 1);
+    if (flight.value?.cabin === 'first') return Array.from({ length: 3 }, (_, index) => index + 1);
+    if (flight.value?.cabin === 'prestige') return Array.from({ length: 5 }, (_, index) => index + 7);
+    if (flight.value?.aircraft === 'A321') return Array.from({ length: 20 }, (_, index) => index + 1);
+    return Array.from({ length: 34 }, (_, index) => index + 28);
 });
-const gridColumns = computed(() =>
-    flight.value?.aircraft === 'A220-300'
-        ? '25px repeat(2, 44px) 58px repeat(3, 44px)'
+const gridColumns = computed(() => {
+    if (flight.value?.cabin === 'first') return '25px repeat(2, 82px)';
+    if (flight.value?.cabin === 'prestige') return '25px repeat(6, 46px)';
+    return flight.value?.aircraft === 'A220-300'
+        ? '25px repeat(2, 32px) 48px repeat(3, 32px)'
         : flight.value?.aircraft === 'A321'
-            ? '25px repeat(3, 44px) 58px repeat(2, 44px)'
-            : '25px repeat(3, 44px) 58px repeat(2, 44px) 58px repeat(2, 44px)',
-);
+            ? '25px repeat(3, 32px) 48px repeat(2, 32px)'
+            : '25px repeat(3, 32px) 48px repeat(2, 32px) 48px repeat(2, 32px)';
+});
+const cabinLabel = computed(() => ({ economy: '일반석', prestige: '프레스티지석', first: '일등석' })[flight.value?.cabin || 'economy']);
+const cabinFeatures = computed(() => {
+    if (flight.value?.cabin === 'first') return ['개인 스위트형 좌석', '좌석 간격 211cm · 180° 침대형', '개인 수납장 및 61cm 모니터'];
+    if (flight.value?.cabin === 'prestige') return ['프레스티지 스위트 좌석', '좌석 간격 190cm · 180° 침대형', '개인 모니터 및 전원 공급 장치'];
+    return [`${flight.value?.aircraft} 기종`, 'USB 포트 및 기내 엔터테인먼트', '좌석 선택 후 자동 저장'];
+});
 function aisleAfter(letter: string) {
+    if (flight.value?.cabin === 'first') return letter === 'J';
+    if (flight.value?.cabin === 'prestige') return letter === 'D' || letter === 'H';
     return letter === 'D' || (flight.value?.aircraft === 'B787-9' && letter === 'G');
 }
 function blocked(seat: string) {
@@ -213,19 +236,31 @@ function moveSeat(event: KeyboardEvent, row: number, letter: string) {
 }
 function choose(seat: string) {
     activeSeat.value = seat;
-    const wasSelected = service.value?.seat === seat;
+    if (service.value?.seat === seat) {
+        store.assignSeat(flightId.value, passengerId.value, seat);
+        seatAnnouncement.value = `${seat} 좌석 선택이 해제되었습니다.`;
+        return;
+    }
+    pendingSeat.value = seat;
+    seatAnnouncement.value = `${seat} 좌석 선택 확인 창이 열렸습니다.`;
+}
+function confirmSeat() {
+    if (!pendingSeat.value) return;
+    const seat = pendingSeat.value;
     const error = store.assignSeat(flightId.value, passengerId.value, seat);
     if (error) {
         seatAnnouncement.value = `${seat} 좌석을 선택할 수 없습니다.`;
         toast.error(t(`onair.${error}`));
     } else {
-        seatAnnouncement.value = wasSelected ? `${seat} 좌석 선택이 해제되었습니다.` : `${seat} 좌석이 선택되었습니다.`;
+        seatAnnouncement.value = `${seat} 좌석이 선택되었습니다.`;
         toast.success(t('onair.seatSaved'));
     }
+    pendingSeat.value = '';
 }
 watch(
     [flightId, passengerId, () => service.value?.seat],
     () => {
+        pendingSeat.value = '';
         activeSeat.value = service.value?.seat && !blocked(service.value.seat) ? service.value.seat : firstAvailableSeat();
     },
     { immediate: true },

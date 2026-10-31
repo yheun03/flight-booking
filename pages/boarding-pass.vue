@@ -78,7 +78,7 @@
                     </div>
                     <div>
                         <dt>예약 등급 / CLASS</dt>
-                        <dd>Y</dd>
+                        <dd>{{ cabinCode(pass.flight) }}</dd>
                     </div>
                 </dl>
                 <div class="airline-boarding-pass__code">
@@ -87,7 +87,7 @@
                 </div>
                 <footer>
                     <b>{{ t('onair.boardingDemo') }}</b>
-                    <span>{{ t('onair.bookingNo') }} {{ booking.id }} · {{ t('onair.economy') }}</span>
+                    <span>{{ t('onair.bookingNo') }} {{ booking.id }} · {{ cabinName(pass.flight) }}</span>
                 </footer>
             </div>
         </article>
@@ -128,6 +128,12 @@ function boardingClose(flight: Flight) {
 }
 function terminal(flight: Flight) {
     return ['GMP', 'CJU'].includes(flight.from) ? 'DOM' : flight.from === 'ICN' ? 'T2' : 'T1';
+}
+function cabinName(flight: Flight) {
+    return ({ economy: '일반석', prestige: '프레스티지석', first: '일등석' })[flight.cabin];
+}
+function cabinCode(flight: Flight) {
+    return ({ economy: 'Y', prestige: 'C', first: 'F' })[flight.cabin];
 }
 function printPasses() {
     window.print();

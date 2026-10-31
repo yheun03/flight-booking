@@ -14,10 +14,10 @@
                 <nav class="airline__nav" :aria-label="t('onair.journey')">
                     <NuxtLink to="/" :class="{ 'is-current': bookingPaths.includes(routePath) }">예약</NuxtLink>
                     <NuxtLink to="/travel-guide">여행 준비</NuxtLink>
-                    <NuxtLink to="/my-page">나의 여행</NuxtLink>
+                    <NuxtLink to="/my-page">스카이패스</NuxtLink>
                 </nav>
                 <div class="airline__header-tools">
-                    <span class="airline__utility">이벤트 · 대한민국 · 한국어</span>
+                    <span class="airline__utility">이벤트 · 대한민국 · 한국어 · 회원가입</span>
                     <button class="airline__site-search" type="button" @click="goToSearch">
                         공항간 운항 정보 검색 <span aria-hidden="true">⌕</span>
                     </button>
@@ -49,7 +49,8 @@
                         <span><span class="sr-only">귀국일</span>{{ store.draft.search.returning || '오는 날' }}</span>
                     </template>
                     <span class="airline__routebar-divider" />
-                    <span><span aria-hidden="true">♙</span> 성인 {{ store.draft.search.adults }}명 · 일반석</span>
+                    <span><span aria-hidden="true">♙</span> 성인 {{ store.draft.search.adults }}명 · {{ cabinLabel
+                        }}</span>
                     <NuxtLink to="/" class="airline__routebar-button">항공편 검색</NuxtLink>
                 </div>
             </div>
@@ -69,15 +70,18 @@
         </main>
         <ClientOnly>
             <footer class="airline__footer">
-                <NuxtLink to="/" class="airline__footer-brand">KOREAN AIR</NuxtLink>
-                <nav aria-label="하단 여행 안내">
-                    <NuxtLink to="/travel-guide">여행 절차</NuxtLink>
-                    <NuxtLink to="/baggage">수하물</NuxtLink>
-                    <NuxtLink to="/restricted-items">반입 제한 물품</NuxtLink>
-                    <NuxtLink to="/my-page">마이페이지</NuxtLink>
-                </nav>
-                <p>{{ t('onair.footerNote') }}</p>
-                <span>© {{ new Date().getFullYear() }} KOREAN AIR PRACTICE</span>
+                <div class="airline__footer-links">
+                    <section v-for="group in footerGroups" :key="group.title">
+                        <strong>{{ group.title }}</strong>
+                        <NuxtLink v-for="item in group.items" :key="item.label" :to="item.to">{{ item.label }}
+                        </NuxtLink>
+                    </section>
+                </div>
+                <div class="airline__footer-bottom">
+                    <NuxtLink to="/" class="airline__footer-brand">KOREAN AIR</NuxtLink>
+                    <p>{{ t('onair.footerNote') }}</p>
+                    <span>© {{ new Date().getFullYear() }} KOREAN AIR PRACTICE</span>
+                </div>
             </footer>
         </ClientOnly>
     </div>
@@ -100,8 +104,16 @@ const serviceNavigation = [
     { path: '/check-in', label: '체크인 · 탑승권', matches: ['/check-in', '/boarding-pass'] },
     { path: '/my-page', label: '마이페이지', matches: ['/my-page', '/seats', '/meals'] },
 ];
+const footerGroups = [
+    { title: '회사소개', items: [{ label: '대한항공에 대하여', to: '/travel-guide' }, { label: '기업지배구조', to: '/travel-guide' }] },
+    { title: '고객지원', items: [{ label: '공지사항', to: '/travel-guide' }, { label: '고객의 말씀', to: '/travel-guide' }, { label: '서비스센터', to: '/travel-guide' }] },
+    { title: '약관 및 규정', items: [{ label: '개인정보 처리방침', to: '/settings' }, { label: '운송약관 및 고지사항', to: '/restricted-items' }] },
+    { title: '기타 안내', items: [{ label: '기업 출장 / 전용기', to: '/travel-guide' }, { label: '항공교통이용자 서비스 계획', to: '/travel-guide' }] },
+    { title: '인기 방문국가', items: [{ label: '미국', to: '/' }, { label: '일본', to: '/' }, { label: '중국', to: '/' }] },
+];
 const step = computed(() => bookingPaths.indexOf(routePath.value) - 1);
 const steps = computed(() => ['flightSelect', 'passengers', 'payment', 'complete'].map((key) => ({ title: t(`onair.${key}`) })));
+const cabinLabel = computed(() => ({ economy: '일반석', prestige: '프레스티지석', first: '일등석' })[store.draft.search.cabin]);
 async function goToSearch() {
     if (routePath.value !== '/') await navigateTo('/');
     await nextTick();
